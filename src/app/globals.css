@@ -1,0 +1,37 @@
+:root {
+    --navy: #00005a;
+    --white: #ffffff;
+    --navy-4: rgba(0, 0, 90, 0.04);
+    --navy-8: rgba(0, 0, 90, 0.08);
+    --navy-12: rgba(0, 0, 90, 0.12);
+    --navy-24: rgba(0, 0, 90, 0.24);
+    --navy-56: rgba(0, 0, 90, 0.56);
+    --navy-72: rgba(0, 0, 90, 0.72);
+
+    --success: #1a7f4b;
+    --success-bg: rgba(26, 127, 75, 0.1);
+    --error: #b3261e;
+    --error-bg: rgba(179, 38, 30, 0.1);
+    --warning: #8a6d00;
+    --warning-bg: rgba(138, 109, 0, 0.12);
+
+    --font: 'Manrope', 'Inter', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font);
+    color: var(--navy);
+    background: var(--white);
+    font-size: 16px;
+    line-height: 1.5;
+}

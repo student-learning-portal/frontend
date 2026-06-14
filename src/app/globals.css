@@ -1,6 +1,7 @@
 :root {
     --navy: #00005a;
     --white: #ffffff;
+    --text-secondery: #00005a8f;
     --navy-4: rgba(0, 0, 90, 0.04);
     --navy-8: rgba(0, 0, 90, 0.08);
     --navy-12: rgba(0, 0, 90, 0.12);
@@ -26,6 +27,13 @@ html,
 body {
     margin: 0;
     padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    text-decoration: none;
 }
 
 body {

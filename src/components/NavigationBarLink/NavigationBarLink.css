@@ -1,0 +1,26 @@
+.link-container {
+    display: flex;
+    flex-direction: row;
+    padding: 0 12px;
+    font-size: 14px;
+    gap: 12px;
+    width: 100%;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    align-items: center;
+    color: var(--text-secondery);
+    font-weight: 600;
+    transition: 150ms ease;
+}
+
+.link-container:hover,
+.link-container.active:hover {
+    background-color: var(--navy-4);
+    color: var(--navy);
+}
+
+.link-container.active {
+    background-color: var(--navy-8);
+    color: var(--navy);
+}

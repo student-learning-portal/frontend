@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 const ICONS = {
     home: 'M3 10.5 12 3l9 7.5M5 9.5V21h14V9.5',
@@ -79,7 +79,7 @@ type Props = {
     strokeWidth?: string;
     className?: string;
     color?: string;
-    style?: React.CSSProperties;
+    style?: CSSProperties;
 };
 
 export default function Icon({

@@ -1,0 +1,54 @@
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0px); }
+    to   { opacity: 0; transform: translateY(-4px); }
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 16px;
+    animation: fadeIn 1s;
+}
+
+.greeting-header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin: 0;
+    animation: fadeIn 500ms;
+}
+
+.greeting-header.fading {
+    animation: fadeOut 550ms ease;
+}
+
+.label {
+    color: var(--navy);
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.password-change-link {
+    color: var(--text-secondery);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    align-items: center;
+}
+
+.input-area {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+}

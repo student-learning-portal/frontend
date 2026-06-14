@@ -8,6 +8,7 @@
     --navy-24: rgba(0, 0, 90, 0.24);
     --navy-56: rgba(0, 0, 90, 0.56);
     --navy-72: rgba(0, 0, 90, 0.72);
+    --navy-94: rgba(0, 0, 90, 0.94);
 
     --success: #1a7f4b;
     --success-bg: rgba(26, 127, 75, 0.1);
@@ -21,6 +22,7 @@
 
 * {
     box-sizing: border-box;
+    font-family: inherit;
 }
 
 html,

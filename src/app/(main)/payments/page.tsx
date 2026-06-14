@@ -1,5 +1,5 @@
 'use client';
 
 export default function Page() {
-    return <div>контентик</div>;
+    return <div>Заглушка</div>;
 }

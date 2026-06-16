@@ -8,6 +8,7 @@
     --navy-24: rgba(0, 0, 90, 0.24);
     --navy-56: rgba(0, 0, 90, 0.56);
     --navy-72: rgba(0, 0, 90, 0.72);
+    --navy-94: rgba(0, 0, 90, 0.94);
 
     --success: #1a7f4b;
     --success-bg: rgba(26, 127, 75, 0.1);
@@ -21,6 +22,7 @@
 
 * {
     box-sizing: border-box;
+    font-family: inherit;
 }
 
 html,
@@ -35,11 +37,22 @@ body {
 a {
     text-decoration: none;
 }
+button {
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    color: inherit;
+}
 
 body {
-    font-family: var(--font);
     color: var(--navy);
     background: var(--white);
     font-size: 16px;
     line-height: 1.5;
+}
+
+body {
+    font-family: var(--font), sans-serif;
 }

@@ -1,0 +1,39 @@
+.auth-container {
+    display: flex;
+    align-self: center;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    width: 400px;
+}
+
+.navigation {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    width: 100%;
+    color: var(--text-secondery);
+    border-bottom: 1px solid var(--navy-12);
+}
+
+.navigation-item {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondery);
+    padding: 0 16px;
+    height: 44px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 150ms ease;
+}
+
+.navigation-item.active {
+    border-bottom: 1px solid var(--navy);
+    color: var(--navy);
+}
+
+
+

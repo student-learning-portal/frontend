@@ -26,7 +26,6 @@
 
 .search-field:focus {
     outline: none;
-    color: var(--navy);
 }
 
 .search-bar:focus-within {

@@ -1,0 +1,39 @@
+.input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.children-container {
+    position: absolute;
+    right: 20px;
+    height: 20px;
+    color: var(--navy-24)
+}
+
+.base-input {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    color: var(--navy);
+    border: 1px solid var(--navy-12);
+    border-radius: 12px;
+    font-size: 14px;
+    transition:
+            border-color 150ms ease,
+            box-shadow 150ms ease;
+}
+
+.base-input.children {
+    padding-right: 50px;
+}
+
+
+.base-input::placeholder {
+    color: var(--navy-24);
+}
+
+.base-input:focus {
+    outline: 1px solid var(--navy);
+    box-shadow: 0 0 0 4px var(--navy-4);
+}

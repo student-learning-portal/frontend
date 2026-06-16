@@ -1,5 +1,5 @@
-import { IconNames } from '@/components/Icon/Icon';
 import { Url } from 'node:url';
+import { IconNames } from '@/types/iconNames';
 
 export type NavigationLinkProps = {
     title: string;

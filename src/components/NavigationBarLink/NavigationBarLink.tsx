@@ -1,7 +1,7 @@
 import './NavigationBarLink.css';
 import Link from 'next/link';
 import { Url } from 'node:url';
-import Icon from '@/components/Icon/Icon';
+import Icon from '@/components/UI/Icon/Icon';
 import { IconNames } from '@/types/iconNames';
 
 type Props = {

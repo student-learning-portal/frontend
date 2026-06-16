@@ -1,10 +1,8 @@
-'use client';
-
 import { ReactNode } from 'react';
 import './mainPage.css';
 import Link from 'next/link';
 import StudentNavigationBar from '@/components/StudentNavigationBar/StudentNavigationBar';
-import Icon from '@/components/Icon/Icon';
+import Icon from '@/components/UI/Icon/Icon';
 import SearchBar from '@/components/SearchBar/SearchBar';
 
 export default function MainLayout({ children }: { children: ReactNode }) {

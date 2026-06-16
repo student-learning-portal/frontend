@@ -1,11 +1,11 @@
 'use client';
 
-import Button from '@/components/Button/Button';
+import Button from '@/components/UI/Button/Button';
 import './loginPage.css';
-import Input from '@/components/Input/Input';
+import Input from '@/components/UI/Input/Input';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Icon from '@/components/Icon/Icon';
+import Icon from '@/components/UI/Icon/Icon';
 
 export default function LoginPage() {
     const greetings = ['Добро пожаловать', 'Xush kelibsiz', 'Welcome'];

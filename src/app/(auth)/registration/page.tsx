@@ -1,9 +1,9 @@
 'use client';
 
-import Button from '@/components/Button/Button';
-import Icon from '@/components/Icon/Icon';
+import Button from '@/components/UI/Button/Button';
+import Icon from '@/components/UI/Icon/Icon';
 import './registrationPage.css';
-import Input from '@/components/Input/Input';
+import Input from '@/components/UI/Input/Input';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 

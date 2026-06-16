@@ -1,0 +1,13 @@
+.registration-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 16px;
+    animation: fadeIn 1s;
+}
+
+.role-container {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}

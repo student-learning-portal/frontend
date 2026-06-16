@@ -1,5 +1,10 @@
 
 .base-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    height: 44px;
     color: white;
     background-color: var(--navy);
     border: none;

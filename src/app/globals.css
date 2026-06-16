@@ -47,9 +47,12 @@ button {
 }
 
 body {
-    font-family: var(--font);
     color: var(--navy);
     background: var(--white);
     font-size: 16px;
     line-height: 1.5;
+}
+
+body {
+    font-family: var(--font), sans-serif;
 }

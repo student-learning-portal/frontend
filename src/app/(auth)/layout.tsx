@@ -1,11 +1,12 @@
 'use client';
 
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import Link from 'next/link';
 import './authPages.css';
+import { usePathname } from 'next/navigation';
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
-    const [active, setActive] = useState('');
+    const pathname = usePathname();
 
     return (
         <div className="auth-container">
@@ -13,15 +14,13 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             <div className="navigation">
                 <Link
                     href="/login"
-                    className={`navigation-item ${active === 'login' && 'active'}`}
-                    onClick={() => setActive('login')}
+                    className={`navigation-item ${pathname === '/login' && 'active'}`}
                 >
                     Вход
                 </Link>
                 <Link
                     href="/registration"
-                    className={`navigation-item ${active === 'registration' && 'active'}`}
-                    onClick={() => setActive('registration')}
+                    className={`navigation-item ${pathname === '/registration' && 'active'}`}
                 >
                     Регистрация
                 </Link>

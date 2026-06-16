@@ -54,7 +54,7 @@ export default function LoginPage() {
                         onClick={() => setIsPasswordVisible((prev) => !prev)}
                     >
                         <Icon
-                            size={22}
+                            size={20}
                             name={isPasswordVisible ? 'closedEye' : 'eye'}
                         ></Icon>
                     </button>

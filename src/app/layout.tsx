@@ -6,7 +6,16 @@ export const metadata: Metadata = {
     title: 'Sehriyo',
     description: 'Обучающая платформа для учеников школы Sehriyo',
     icons: {
-        icon: '/logo-navy.svg',
+        icon: [
+            {
+                url: '/favicon-light.svg',
+                media: '(prefers-color-scheme: light)',
+            },
+            {
+                url: '/favicon-dark.svg',
+                media: '(prefers-color-scheme: dark)',
+            },
+        ],
     },
 };
 

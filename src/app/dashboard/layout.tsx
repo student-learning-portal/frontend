@@ -4,12 +4,12 @@ import Link from 'next/link';
 import StudentNavigationBar from '@/components/StudentNavigationBar/StudentNavigationBar';
 import Icon from '@/components/UI/Icon/Icon';
 import SearchBar from '@/components/SearchBar/SearchBar';
-import { signOut } from '@/auth';
+import LogoutButton from '@/components/LogoutButton/LogoutButton';
 
 export default function MainLayout({ children }: { children: ReactNode }) {
     return (
         <div className="main-container">
-            <Link href="/" className="logo-part">
+            <Link href="/public" className="logo-part">
                 <img src="/logo-navy.svg" alt="sehriyo-logo"></img>
                 <span>Портал ученика</span>
             </Link>
@@ -23,15 +23,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
                             alignSelf: 'center',
                         }}
                     ></Icon>
-                    <button
-                        className="avatar-part"
-                        onClick={async () => {
-                            'use server';
-                            await signOut();
-                        }}
-                    >
-                        <span className="avatar"> АМ </span>
-                    </button>
+                    <LogoutButton />
                 </div>
             </div>
             <div className="side-bar">

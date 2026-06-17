@@ -8,15 +8,16 @@ export const authConfig = {
         authorized({ auth, request: { nextUrl } }) {
             console.log('authorized', nextUrl.pathname);
             const isLoggedIn = !!auth?.user;
-            const isPublicRoute = !(
-                nextUrl.pathname.startsWith('/login') ||
-                nextUrl.pathname.startsWith('/registration')
-            );
+            const isNotPublicRoute =
+                nextUrl.pathname.startsWith('/dashboard') ||
+                nextUrl.pathname.startsWith('/catalog');
 
-            if (isPublicRoute) {
+            console.log(isNotPublicRoute);
+            console.log(isLoggedIn);
+            if (isNotPublicRoute) {
                 return isLoggedIn;
             } else if (isLoggedIn) {
-                return Response.redirect(new URL('/', nextUrl));
+                return Response.redirect(new URL('/dashboard', nextUrl));
             }
             return true;
         },

@@ -4,21 +4,25 @@ import Button from '@/components/UI/Button/Button';
 import Icon from '@/components/UI/Icon/Icon';
 import './registrationPage.css';
 import Input from '@/components/UI/Input/Input';
-import { useState } from 'react';
+import { useActionState, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { authenticate } from '@/lib/actions';
 
 export default function Page() {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    const router = useRouter();
+    useRouter();
     const [chosenRole, setChosenRole] = useState('student');
 
+    const [, formAction, isPending] = useActionState(authenticate, undefined);
+
     return (
-        <div className="registration-container">
+        <form action={formAction} className="registration-container">
             <h2> Создать аккаунт </h2>
             <div className="role-container">
                 <Button
                     onClick={() => setChosenRole('student')}
                     variant={chosenRole === 'student' ? 'primary' : 'secondary'}
+                    type="button"
                 >
                     <Icon size={20} name="graduation"></Icon>
                     Ученик
@@ -26,6 +30,7 @@ export default function Page() {
                 <Button
                     onClick={() => setChosenRole('teacher')}
                     variant={chosenRole === 'teacher' ? 'primary' : 'secondary'}
+                    type="button"
                 >
                     <Icon size={20} name="users"></Icon>
                     Преподаватель
@@ -33,11 +38,11 @@ export default function Page() {
             </div>
             <div className="input-area">
                 <div className="label"> Имя </div>
-                <Input placeholder="Введите имя"></Input>
+                <Input placeholder="Введите имя" required></Input>
             </div>
             <div className="input-area">
                 <div className="label"> Email </div>
-                <Input placeholder="Введите email"></Input>
+                <Input placeholder="Введите email" required></Input>
             </div>
             <div className="input-area">
                 <div className="label">Пароль</div>
@@ -45,6 +50,7 @@ export default function Page() {
                     placeholder="Введите пароль"
                     type={isPasswordVisible ? 'text' : 'password'}
                     variant="children"
+                    required
                 >
                     <button
                         onClick={() => setIsPasswordVisible((prev) => !prev)}
@@ -73,14 +79,9 @@ export default function Page() {
                     </button>
                 </Input>
             </div>
-            <Button
-                style={{ height: '44px' }}
-                onClick={() => {
-                    router.push('/');
-                }}
-            >
+            <Button style={{ height: '44px' }} disabled={isPending}>
                 Зарегистрироваться
             </Button>
-        </div>
+        </form>
     );
 }

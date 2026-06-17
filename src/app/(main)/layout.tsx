@@ -4,6 +4,7 @@ import Link from 'next/link';
 import StudentNavigationBar from '@/components/StudentNavigationBar/StudentNavigationBar';
 import Icon from '@/components/UI/Icon/Icon';
 import SearchBar from '@/components/SearchBar/SearchBar';
+import { signOut } from '@/auth';
 
 export default function MainLayout({ children }: { children: ReactNode }) {
     return (
@@ -22,7 +23,13 @@ export default function MainLayout({ children }: { children: ReactNode }) {
                             alignSelf: 'center',
                         }}
                     ></Icon>
-                    <button className="avatar-part">
+                    <button
+                        className="avatar-part"
+                        onClick={async () => {
+                            'use server';
+                            await signOut();
+                        }}
+                    >
                         <span className="avatar"> АМ </span>
                     </button>
                 </div>

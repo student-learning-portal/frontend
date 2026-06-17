@@ -3,17 +3,19 @@
 import Button from '@/components/UI/Button/Button';
 import './loginPage.css';
 import Input from '@/components/UI/Input/Input';
-import { useEffect, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from '@/components/UI/Icon/Icon';
+import { authenticate } from '@/lib/actions';
 
 export default function LoginPage() {
     const greetings = ['Добро пожаловать', 'Xush kelibsiz', 'Welcome'];
 
     const [index, setIndex] = useState(0);
     const [isVisible, setIsVisible] = useState(true);
-    const router = useRouter();
+    useRouter();
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [errorMessage, formAction] = useActionState(authenticate, undefined);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -29,7 +31,7 @@ export default function LoginPage() {
     }, [greetings.length]);
 
     return (
-        <div className="login-container">
+        <form action={formAction} className="login-container">
             <h2
                 key={index}
                 className={`greeting-header${!isVisible ? ' fading' : ''}`}
@@ -38,7 +40,11 @@ export default function LoginPage() {
             </h2>
             <div className="input-area">
                 <div className="label"> Email </div>
-                <Input placeholder="Введите email" type="email"></Input>
+                <Input
+                    placeholder="Введите email"
+                    type="email"
+                    name="email"
+                ></Input>
             </div>
             <div className="input-area">
                 <div className="label">
@@ -49,9 +55,11 @@ export default function LoginPage() {
                     placeholder="Введите пароль"
                     type={isPasswordVisible ? 'text' : 'password'}
                     variant="children"
+                    name="password"
                 >
                     <button
                         onClick={() => setIsPasswordVisible((prev) => !prev)}
+                        type="button"
                     >
                         <Icon
                             size={20}
@@ -60,14 +68,8 @@ export default function LoginPage() {
                     </button>
                 </Input>
             </div>
-            <Button
-                style={{ height: '44px' }}
-                onClick={() => {
-                    router.push('/');
-                }}
-            >
-                Войти
-            </Button>
-        </div>
+            <div>{errorMessage}</div>
+            <Button style={{ height: '44px' }}>Войти</Button>
+        </form>
     );
 }

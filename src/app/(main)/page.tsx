@@ -1,3 +1,3 @@
-export default function Page() {
-    return <div>контентик</div>;
+export default async function Page() {
+    return <div></div>;
 }

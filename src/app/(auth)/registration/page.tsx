@@ -6,14 +6,17 @@ import './registrationPage.css';
 import Input from '@/components/UI/Input/Input';
 import { useActionState, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { authenticate } from '@/lib/actions';
+import { register } from '@/lib/actions';
 
 export default function Page() {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     useRouter();
     const [chosenRole, setChosenRole] = useState('student');
 
-    const [, formAction, isPending] = useActionState(authenticate, undefined);
+    const [errorMessage, formAction, isPending] = useActionState(
+        register,
+        undefined,
+    );
 
     return (
         <form action={formAction} className="registration-container">
@@ -38,11 +41,15 @@ export default function Page() {
             </div>
             <div className="input-area">
                 <div className="label"> Имя </div>
-                <Input placeholder="Введите имя" required></Input>
+                <Input placeholder="Введите имя" name="name" required></Input>
             </div>
             <div className="input-area">
                 <div className="label"> Email </div>
-                <Input placeholder="Введите email" required></Input>
+                <Input
+                    placeholder="Введите email"
+                    name="email"
+                    required
+                ></Input>
             </div>
             <div className="input-area">
                 <div className="label">Пароль</div>
@@ -50,10 +57,12 @@ export default function Page() {
                     placeholder="Введите пароль"
                     type={isPasswordVisible ? 'text' : 'password'}
                     variant="children"
+                    name="password"
                     required
                 >
                     <button
                         onClick={() => setIsPasswordVisible((prev) => !prev)}
+                        type="button"
                     >
                         <Icon
                             size={20}
@@ -68,9 +77,12 @@ export default function Page() {
                     placeholder="Повторите пароль"
                     type={isPasswordVisible ? 'text' : 'password'}
                     variant="children"
+                    name="secondPassword"
+                    required
                 >
                     <button
                         onClick={() => setIsPasswordVisible((prev) => !prev)}
+                        type="button"
                     >
                         <Icon
                             size={20}
@@ -79,6 +91,8 @@ export default function Page() {
                     </button>
                 </Input>
             </div>
+            <input type="hidden" name="redirectTo" value="/dashboard" />
+            <div>{errorMessage}</div>
             <Button style={{ height: '44px' }} disabled={isPending}>
                 Зарегистрироваться
             </Button>

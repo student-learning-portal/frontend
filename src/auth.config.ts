@@ -12,8 +12,6 @@ export const authConfig = {
                 nextUrl.pathname.startsWith('/dashboard') ||
                 nextUrl.pathname.startsWith('/catalog');
 
-            console.log(isNotPublicRoute);
-            console.log(isLoggedIn);
             if (isNotPublicRoute) {
                 return isLoggedIn;
             } else if (isLoggedIn) {

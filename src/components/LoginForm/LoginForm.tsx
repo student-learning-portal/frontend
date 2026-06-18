@@ -47,6 +47,7 @@ export default function LoginForm() {
                     placeholder="Введите email"
                     type="email"
                     name="email"
+                    required
                 ></Input>
             </div>
             <div className="input-area">
@@ -59,6 +60,7 @@ export default function LoginForm() {
                     type={isPasswordVisible ? 'text' : 'password'}
                     variant="children"
                     name="password"
+                    required
                 >
                     <button
                         onClick={() => setIsPasswordVisible((prev) => !prev)}

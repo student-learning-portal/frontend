@@ -1,3 +1,5 @@
+'use client';
+
 import './StudentNavigationBar.css';
 import NavigationBarLink from '@/components/NavigationBarLink/NavigationBarLink';
 import { navigationLinkProps } from '@/constants/navigationLinks';

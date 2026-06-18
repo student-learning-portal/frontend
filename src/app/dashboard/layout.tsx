@@ -1,16 +1,15 @@
-'use client';
-
 import { ReactNode } from 'react';
 import './mainPage.css';
 import Link from 'next/link';
 import StudentNavigationBar from '@/components/StudentNavigationBar/StudentNavigationBar';
-import Icon from '@/components/Icon/Icon';
+import Icon from '@/components/UI/Icon/Icon';
 import SearchBar from '@/components/SearchBar/SearchBar';
+import LogoutButton from '@/components/LogoutButton/LogoutButton';
 
 export default function MainLayout({ children }: { children: ReactNode }) {
     return (
         <div className="main-container">
-            <Link href="/" className="logo-part">
+            <Link href="/dashboard" className="logo-part">
                 <img src="/logo-navy.svg" alt="sehriyo-logo"></img>
                 <span>Портал ученика</span>
             </Link>
@@ -24,9 +23,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
                             alignSelf: 'center',
                         }}
                     ></Icon>
-                    <button className="avatar-part">
-                        <span className="avatar"> АМ </span>
-                    </button>
+                    <LogoutButton />
                 </div>
             </div>
             <div className="side-bar">

@@ -13,10 +13,10 @@ export default function LoginForm() {
     const [index, setIndex] = useState(0);
     const [isVisible, setIsVisible] = useState(true);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    const [errorMessage, formAction, isPending] = useActionState(
-        authenticate,
-        undefined,
-    );
+    const [state, formAction, isPending] = useActionState(authenticate, {
+        error: null,
+        email: '',
+    });
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
 
@@ -47,6 +47,7 @@ export default function LoginForm() {
                     placeholder="Введите email"
                     type="email"
                     name="email"
+                    defaultValue={state.email}
                     required
                 ></Input>
             </div>
@@ -74,7 +75,7 @@ export default function LoginForm() {
                 </Input>
                 <input type="hidden" name="redirectTo" value={callbackUrl} />
             </div>
-            <div>{errorMessage}</div>
+            <div>{state.error}</div>
             <Button style={{ height: '44px' }} disabled={isPending}>
                 Войти
             </Button>

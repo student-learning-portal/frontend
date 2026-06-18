@@ -9,7 +9,7 @@ import LogoutButton from '@/components/LogoutButton/LogoutButton';
 export default function MainLayout({ children }: { children: ReactNode }) {
     return (
         <div className="main-container">
-            <Link href="/public" className="logo-part">
+            <Link href="/dashboard" className="logo-part">
                 <img src="/logo-navy.svg" alt="sehriyo-logo"></img>
                 <span>Портал ученика</span>
             </Link>

@@ -3,7 +3,7 @@ import { NavigationLinkProps } from '@/types/navigationLinkProps';
 export const navigationLinkProps: NavigationLinkProps[] = [
     {
         title: 'Главная',
-        href: '/',
+        href: '/dashboard',
         iconName: 'home',
     },
     {
@@ -13,22 +13,22 @@ export const navigationLinkProps: NavigationLinkProps[] = [
     },
     {
         title: 'Мои курсы',
-        href: '/my-courses',
+        href: '/dashboard/my-courses',
         iconName: 'book',
     },
     {
         title: 'Результаты',
-        href: '/results',
+        href: '/dashboard/results',
         iconName: 'chart',
     },
     {
         title: 'Платежи',
-        href: '/payments',
+        href: '/dashboard/payments',
         iconName: 'wallet',
     },
     {
         title: 'Настройки',
-        href: '/settings',
+        href: '/dashboard/settings',
         iconName: 'settings',
     },
 ];

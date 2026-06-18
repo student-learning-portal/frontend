@@ -11,12 +11,15 @@ import { register } from '@/lib/actions';
 export default function Page() {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     useRouter();
-    const [chosenRole, setChosenRole] = useState('student');
 
-    const [errorMessage, formAction, isPending] = useActionState(
-        register,
-        undefined,
-    );
+    const [state, formAction, isPending] = useActionState(register, {
+        error: null,
+        email: '',
+        name: '',
+        role: 'student',
+    });
+
+    const [chosenRole, setChosenRole] = useState(state.role);
 
     return (
         <form action={formAction} className="registration-container">
@@ -38,16 +41,23 @@ export default function Page() {
                     <Icon size={20} name="users"></Icon>
                     Преподаватель
                 </Button>
+                <input type="hidden" name="role" value={chosenRole} />
             </div>
             <div className="input-area">
                 <div className="label"> Имя </div>
-                <Input placeholder="Введите имя" name="name" required></Input>
+                <Input
+                    placeholder="Введите имя"
+                    name="name"
+                    defaultValue={state.name}
+                    required
+                ></Input>
             </div>
             <div className="input-area">
                 <div className="label"> Email </div>
                 <Input
                     placeholder="Введите email"
                     name="email"
+                    defaultValue={state.email}
                     required
                 ></Input>
             </div>
@@ -92,7 +102,7 @@ export default function Page() {
                 </Input>
             </div>
             <input type="hidden" name="redirectTo" value="/dashboard" />
-            <div>{errorMessage}</div>
+            <div>{state.error}</div>
             <Button style={{ height: '44px' }} disabled={isPending}>
                 Зарегистрироваться
             </Button>

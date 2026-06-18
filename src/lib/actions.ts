@@ -4,19 +4,40 @@ import { AuthError } from 'next-auth';
 import { signIn, signOut } from '@/auth';
 import { registerUser } from '@/lib/api/auth';
 
-export async function authenticate(
-    prevState: string | undefined,
-    formData: FormData,
-) {
+type AuthState = {
+    error: null | string;
+    email: string;
+};
+
+type RegistrationState = {
+    error: null | string;
+    name: string;
+    email: string;
+    role: 'student' | 'teacher';
+};
+
+export async function authenticate(prevState: AuthState, formData: FormData) {
+    const email = String(formData.get('email') ?? '');
     try {
         await signIn('credentials', formData);
+
+        return {
+            error: null,
+            email,
+        };
     } catch (error) {
         if (error instanceof AuthError) {
             switch (error.type) {
                 case 'CredentialsSignin':
-                    return 'Invalid credentials.';
+                    return {
+                        error: 'Неправильно введены данные',
+                        email,
+                    };
                 default:
-                    return 'Something went wrong.';
+                    return {
+                        error: 'Что-то пошло не так',
+                        email,
+                    };
             }
         }
         throw error;
@@ -24,27 +45,51 @@ export async function authenticate(
 }
 
 export async function register(
-    prevState: string | undefined,
+    prevState: RegistrationState,
     formData: FormData,
 ) {
+    const email = String(formData.get('email') ?? '');
+    const name = String(formData.get('name') ?? '');
+    const password = String(formData.get('password') ?? '');
+    const secondPassword = String(formData.get('secondPassword') ?? '');
+    const role = String(formData.get('role') ?? 'student') as
+        | 'student'
+        | 'teacher';
     try {
-        const email = formData.get('email') as string;
-        const password = formData.get('password') as string;
-        const secondPassword = formData.get('secondPassword') as string;
-
         if (password !== secondPassword) {
-            return 'Пароли не совпадают';
+            return { error: 'Пароли не совпадают', email, name, role };
         }
 
         const response = await registerUser(email, password);
 
-        if (!response?.user) return 'Пользователь уже существует';
+        if (!response?.user)
+            return { error: 'Пользователь не существует', email, name, role };
+        await signIn('credentials', formData);
+        return { error: null, email, name, role };
     } catch (error) {
-        if (error instanceof Error) {
-            return error.message;
+        if (error instanceof AuthError) {
+            switch (error.type) {
+                case 'CredentialsSignin':
+                    return {
+                        error: 'Неправильно введены данные',
+                        email,
+                        name,
+                        role,
+                    };
+                default:
+                    return {
+                        error: 'Что-то пошло не так',
+                        email,
+                        name,
+                        role,
+                    };
+            }
         }
+        if (error instanceof Error) {
+            return { error: error.message, email, name, role };
+        }
+        throw error;
     }
-    await signIn('credentials', formData);
 }
 
 export async function handleLogout() {

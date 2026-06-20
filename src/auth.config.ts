@@ -5,6 +5,19 @@ export const authConfig = {
         signIn: '/login',
     },
     callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.accessToken = user.token;
+                token.id = user.id;
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            session.user.fullName = token.fullName as string;
+            session.user.role = token.role as 'teacher' | 'student';
+            session.accessToken = token.accessToken as string;
+            return session;
+        },
         authorized({ auth, request: { nextUrl } }) {
             console.log('authorized', nextUrl.pathname);
             const isLoggedIn = !!auth?.user;

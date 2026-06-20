@@ -8,7 +8,7 @@
     position: absolute;
     right: 20px;
     height: 20px;
-    color: var(--navy-24)
+    color: var(--navy-24);
 }
 
 .base-input {
@@ -20,14 +20,13 @@
     border-radius: 12px;
     font-size: 14px;
     transition:
-            border-color 150ms ease,
-            box-shadow 150ms ease;
+        border-color 150ms ease,
+        box-shadow 150ms ease;
 }
 
 .base-input.children {
     padding-right: 50px;
 }
-
 
 .base-input::placeholder {
     color: var(--navy-24);

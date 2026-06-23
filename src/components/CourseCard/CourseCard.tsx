@@ -30,10 +30,7 @@ export default function CourseCard({ course }: Props) {
 
     return (
         <Link href={`/course?id=${course.id}`} className="course-card">
-            <div
-                className="course-card__banner"
-                data-variant={bannerVariant}
-            />
+            <div className="course-card__banner" data-variant={bannerVariant} />
             <div className="course-card__body">
                 <div className="course-card__tags">
                     <span className="course-card__tag">{course.subject}</span>

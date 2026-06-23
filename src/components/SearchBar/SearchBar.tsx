@@ -9,7 +9,11 @@ type SearchBarProps = {
     onChange?: (value: string) => void;
 } & Omit<ComponentProps<'input'>, 'onChange'>;
 
-export default function SearchBar({ value, onChange, ...props }: SearchBarProps) {
+export default function SearchBar({
+    value,
+    onChange,
+    ...props
+}: SearchBarProps) {
     return (
         <div className="search-bar">
             <Icon size={20} name="search" />

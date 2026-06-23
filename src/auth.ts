@@ -3,6 +3,7 @@ import { authConfig } from './auth.config';
 import Credentials from 'next-auth/providers/credentials';
 import { authorizeUser } from '@/lib/api/auth';
 import { z } from 'zod';
+import { User } from '@/models/User';
 
 export const { auth, signIn, signOut } = NextAuth({
     ...authConfig,
@@ -15,7 +16,14 @@ export const { auth, signIn, signOut } = NextAuth({
 
                 if (parsedCredentials.success) {
                     const { email, password } = parsedCredentials.data;
-                    return await authorizeUser(email, password);
+                    const result = await authorizeUser(email, password);
+                    return {
+                        id: result.user.id,
+                        email: result.user.email,
+                        fullName: result.user.fullName,
+                        role: result.user.role,
+                        token: result.token,
+                    } as User;
                 }
                 return null;
             },

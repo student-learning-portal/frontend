@@ -6,3 +6,8 @@
     padding: 16px 12px;
     gap: 2px;
 }
+
+.navigation-bar.row {
+    flex-direction: row;
+    gap: 8px;
+}

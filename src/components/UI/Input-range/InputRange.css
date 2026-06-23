@@ -1,0 +1,22 @@
+.input-range-container {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+}
+
+.input-range-text {
+    width: 65px;
+    font-size: 14px;
+    color: var(--text-secondery);
+
+}
+
+.input-range {
+    cursor: auto;
+    accent-color: var(--navy);
+}
+
+.input-range:focus-visible {
+    outline: none;
+}

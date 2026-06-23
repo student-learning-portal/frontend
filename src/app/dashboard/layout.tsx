@@ -1,10 +1,11 @@
 import { ReactNode } from 'react';
 import './mainPage.css';
 import Link from 'next/link';
-import StudentNavigationBar from '@/components/StudentNavigationBar/StudentNavigationBar';
+import StudentNavigationBar from '@/components/StudentNavigationBar/NavigationBar';
 import Icon from '@/components/UI/Icon/Icon';
 import SearchBar from '@/components/SearchBar/SearchBar';
 import LogoutButton from '@/components/LogoutButton/LogoutButton';
+import { studentNavigationLinkProps } from '@/constants/navigationLinks';
 
 export default function MainLayout({ children }: { children: ReactNode }) {
     return (
@@ -27,11 +28,12 @@ export default function MainLayout({ children }: { children: ReactNode }) {
                 </div>
             </div>
             <div className="side-bar">
-                <StudentNavigationBar></StudentNavigationBar>
+                <StudentNavigationBar
+                    navigationLinkProps={studentNavigationLinkProps}
+                ></StudentNavigationBar>
                 <div className="admin-panel">Смена вида</div>
             </div>
-
-            <div className="main-content"> {children} </div>
+            <div className="main-content"> {children} ddfdfdfdfd</div>
         </div>
     );
 }

@@ -1,6 +1,9 @@
-import { NavigationLinkProps } from '@/types/navigationLinkProps';
+import {
+    StudentNavigationLinkProps,
+    CatalogNavigationLinkProps,
+} from '@/types/navigationLinkProps';
 
-export const navigationLinkProps: NavigationLinkProps[] = [
+export const studentNavigationLinkProps: StudentNavigationLinkProps[] = [
     {
         title: 'Главная',
         href: '/dashboard',
@@ -30,5 +33,18 @@ export const navigationLinkProps: NavigationLinkProps[] = [
         title: 'Настройки',
         href: '/dashboard/settings',
         iconName: 'settings',
+    },
+];
+
+export const catalogNavigationLinkProps: CatalogNavigationLinkProps[] = [
+    {
+        title: 'Каталог',
+        href: '/catalog',
+        iconName: null,
+    },
+    {
+        title: 'Преподаватели',
+        href: '/catalog/teachers',
+        iconName: null,
     },
 ];

@@ -11,7 +11,7 @@ type AuthState = {
 
 type RegistrationState = {
     error: null | string;
-    name: string;
+    fullName: string;
     email: string;
     role: 'student' | 'teacher';
 };
@@ -49,7 +49,7 @@ export async function register(
     formData: FormData,
 ) {
     const email = String(formData.get('email') ?? '');
-    const name = String(formData.get('name') ?? '');
+    const fullName = String(formData.get('fullName') ?? '');
     const password = String(formData.get('password') ?? '');
     const secondPassword = String(formData.get('secondPassword') ?? '');
     const role = String(formData.get('role') ?? 'student') as
@@ -57,15 +57,20 @@ export async function register(
         | 'teacher';
     try {
         if (password !== secondPassword) {
-            return { error: 'Пароли не совпадают', email, name, role };
+            return { error: 'Пароли не совпадают', email, fullName, role };
         }
 
-        const response = await registerUser(email, password);
+        const response = await registerUser(email, password, role, fullName);
 
         if (!response?.user)
-            return { error: 'Пользователь не существует', email, name, role };
+            return {
+                error: 'Пользователь не существует',
+                email,
+                fullName,
+                role,
+            };
         await signIn('credentials', formData);
-        return { error: null, email, name, role };
+        return { error: null, email, fullName, role };
     } catch (error) {
         if (error instanceof AuthError) {
             switch (error.type) {
@@ -73,20 +78,17 @@ export async function register(
                     return {
                         error: 'Неправильно введены данные',
                         email,
-                        name,
+                        fullName,
                         role,
                     };
                 default:
                     return {
                         error: 'Что-то пошло не так',
                         email,
-                        name,
+                        fullName,
                         role,
                     };
             }
-        }
-        if (error instanceof Error) {
-            return { error: error.message, email, name, role };
         }
         throw error;
     }

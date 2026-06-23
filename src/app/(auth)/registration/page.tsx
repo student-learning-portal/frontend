@@ -5,17 +5,15 @@ import Icon from '@/components/UI/Icon/Icon';
 import './registrationPage.css';
 import Input from '@/components/UI/Input/Input';
 import { useActionState, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { register } from '@/lib/actions';
 
-export default function Page() {
+export default function RegistrationPage() {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    useRouter();
 
     const [state, formAction, isPending] = useActionState(register, {
         error: null,
         email: '',
-        name: '',
+        fullName: '',
         role: 'student',
     });
 
@@ -47,8 +45,8 @@ export default function Page() {
                 <div className="label"> Имя </div>
                 <Input
                     placeholder="Введите имя"
-                    name="name"
-                    defaultValue={state.name}
+                    name="fullName"
+                    defaultValue={state.fullName}
                     required
                 ></Input>
             </div>

@@ -65,7 +65,8 @@
     transition: 150ms ease;
 }
 
-.option:hover, .option.selected:hover {
+.option:hover,
+.option.selected:hover {
     background-color: var(--navy-8);
 }
 
@@ -73,5 +74,3 @@
     background-color: var(--navy-4);
     font-weight: 600;
 }
-
-

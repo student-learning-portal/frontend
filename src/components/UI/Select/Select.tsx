@@ -22,10 +22,12 @@ export default function Select({ selectValues, value, onChange }: Props) {
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        return () =>
+            document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const selectedOption = selectValues.find((o) => o.value === value) ?? selectValues[0];
+    const selectedOption =
+        selectValues.find((o) => o.value === value) ?? selectValues[0];
 
     return (
         <div className="select-container" ref={ref}>
@@ -34,8 +36,14 @@ export default function Select({ selectValues, value, onChange }: Props) {
                 onClick={() => setIsListVisible((prev) => !prev)}
             >
                 <span>{selectedOption.title}</span>
-                <span className={`select-icon ${isListVisible ? 'rotate' : ''}`}>
-                    <Icon size={18} name="chevronDown" style={{ color: 'var(--navy-56)' }} />
+                <span
+                    className={`select-icon ${isListVisible ? 'rotate' : ''}`}
+                >
+                    <Icon
+                        size={18}
+                        name="chevronDown"
+                        style={{ color: 'var(--navy-56)' }}
+                    />
                 </span>
             </button>
             <div className={`option-list ${isListVisible ? 'visible' : ''}`}>
@@ -50,7 +58,11 @@ export default function Select({ selectValues, value, onChange }: Props) {
                     >
                         {option.title}
                         {value === option.value && (
-                            <Icon size={18} name="check" style={{ color: 'var(--navy-56)' }} />
+                            <Icon
+                                size={18}
+                                name="check"
+                                style={{ color: 'var(--navy-56)' }}
+                            />
                         )}
                     </button>
                 ))}

@@ -22,28 +22,48 @@
 
 .course-card__banner[data-variant='0'] {
     background:
-        radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px),
+        radial-gradient(
+            circle at 30% 50%,
+            rgba(255, 255, 255, 0.08) 0 1px,
+            transparent 1px
+        ),
         linear-gradient(135deg, #0a0f4a 0%, #161d63 100%);
-    background-size: 26px 26px, cover;
+    background-size:
+        26px 26px,
+        cover;
 }
 
 .course-card__banner[data-variant='1'] {
     background:
-        repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 20px),
+        repeating-linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.05) 0 2px,
+            transparent 2px 20px
+        ),
         linear-gradient(135deg, #11164f 0%, #232c78 100%);
 }
 
 .course-card__banner[data-variant='2'] {
     background:
-        radial-gradient(circle at 75% 20%, rgba(120, 130, 220, 0.35), transparent 55%),
+        radial-gradient(
+            circle at 75% 20%,
+            rgba(120, 130, 220, 0.35),
+            transparent 55%
+        ),
         linear-gradient(135deg, #0c1150 0%, #1a2270 100%);
 }
 
 .course-card__banner[data-variant='3'] {
     background:
-        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px),
+        radial-gradient(
+            circle at 50% 50%,
+            rgba(255, 255, 255, 0.06) 0 1px,
+            transparent 1px
+        ),
         linear-gradient(135deg, #0d1252 0%, #20296f 100%);
-    background-size: 22px 22px, cover;
+    background-size:
+        22px 22px,
+        cover;
 }
 
 .course-card__body {

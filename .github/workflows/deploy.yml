@@ -9,7 +9,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Pull latest changes
-        run: cd ~/frontend && git pull
+        run: cd /root/frontend && git pull
 
       - name: Restart containers
-        run: cd ~/infra && docker compose up -d --build
+        run: cd /root/infra && docker compose up -d --build

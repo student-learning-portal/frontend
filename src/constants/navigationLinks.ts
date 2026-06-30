@@ -38,9 +38,9 @@ export const studentNavigationLinkProps: StudentNavigationLinkProps[] = [
 
 export const teacherNavigationLinkProps: StudentNavigationLinkProps[] = [
     {
-        title: 'Аналитика',
+        title: 'Главная',
         href: '/dashboard/teacher',
-        iconName: 'chart',
+        iconName: 'home',
     },
     {
         title: 'Каталог',

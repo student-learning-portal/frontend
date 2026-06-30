@@ -5,12 +5,16 @@ import { useEffect, useMemo, useState, useTransition } from 'react';
 import { Course } from '@/models/Course';
 import { SelectOption } from '@/types/selectOption';
 import Select from '@/components/UI/Select/Select';
+import SearchBar from '@/components/SearchBar/SearchBar';
 import Icon from '@/components/UI/Icon/Icon';
 import {
     DashboardStudent,
     TeacherDashboard,
     getTeacherDashboard,
 } from '@/lib/api/analytics';
+
+type SortField = 'name' | 'progress' | 'status' | 'inactive';
+type SortDir = 'asc' | 'desc';
 
 function pluralizeStudents(count: number): string {
     const mod10 = count % 10;
@@ -40,6 +44,62 @@ function initials(name: string | undefined, fallback: string): string {
     return letters.toUpperCase();
 }
 
+function studentName(s: DashboardStudent): string {
+    return s.full_name || s.student_id;
+}
+
+// compareBy returns the ascending comparison for a given field; the caller
+// flips the sign for descending order.
+function compareBy(field: SortField, a: DashboardStudent, b: DashboardStudent): number {
+    switch (field) {
+        case 'name':
+            return studentName(a).localeCompare(studentName(b), 'ru');
+        case 'progress':
+            return a.progress_percentage - b.progress_percentage;
+        case 'status':
+            // AT_RISK before ON_TRACK in ascending order (worst first).
+            return (
+                (a.status === 'AT_RISK' ? 0 : 1) -
+                (b.status === 'AT_RISK' ? 0 : 1)
+            );
+        case 'inactive':
+            return (a.days_inactive ?? 0) - (b.days_inactive ?? 0);
+    }
+}
+
+function SortHeader({
+    label,
+    field,
+    activeField,
+    dir,
+    onSort,
+}: {
+    label: string;
+    field: SortField;
+    activeField: SortField;
+    dir: SortDir;
+    onSort: (field: SortField) => void;
+}) {
+    const active = activeField === field;
+    return (
+        <button
+            type="button"
+            className={'td-th' + (active ? ' td-th--active' : '')}
+            onClick={() => onSort(field)}
+            aria-label={`Сортировать по «${label}»`}
+        >
+            <span>{label}</span>
+            <Icon
+                size={14}
+                name={active && dir === 'asc' ? 'chevronUp' : 'chevronDown'}
+                className={
+                    'td-th__caret' + (active ? ' td-th__caret--active' : '')
+                }
+            />
+        </button>
+    );
+}
+
 function StudentRow({ student }: { student: DashboardStudent }) {
     const atRisk = student.status === 'AT_RISK';
     const progress = Math.round(student.progress_percentage);
@@ -51,9 +111,7 @@ function StudentRow({ student }: { student: DashboardStudent }) {
                 <span className="td-avatar">
                     {initials(student.full_name, student.student_id)}
                 </span>
-                <span className="td-row__name">
-                    {student.full_name || student.student_id}
-                </span>
+                <span className="td-row__name">{studentName(student)}</span>
             </div>
             <div className="td-row__progress">
                 <div className="td-progress">
@@ -99,6 +157,10 @@ export default function TeacherAnalytics({ courses }: { courses: Course[] }) {
     const [error, setError] = useState<string | null>(null);
     const [isPending, startTransition] = useTransition();
 
+    const [query, setQuery] = useState('');
+    const [sortField, setSortField] = useState<SortField>('progress');
+    const [sortDir, setSortDir] = useState<SortDir>('asc');
+
     useEffect(() => {
         if (!courseId) return;
         startTransition(async () => {
@@ -112,6 +174,29 @@ export default function TeacherAnalytics({ courses }: { courses: Course[] }) {
             }
         });
     }, [courseId]);
+
+    const students = useMemo(() => data?.students ?? [], [data]);
+
+    const handleSort = (field: SortField) => {
+        if (field === sortField) {
+            setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+        } else {
+            setSortField(field);
+            setSortDir('asc');
+        }
+    };
+
+    const visibleStudents = useMemo(() => {
+        const q = query.trim().toLowerCase();
+        const filtered = q
+            ? students.filter((s) =>
+                  studentName(s).toLowerCase().includes(q),
+              )
+            : students;
+
+        const sign = sortDir === 'asc' ? 1 : -1;
+        return [...filtered].sort((a, b) => sign * compareBy(sortField, a, b));
+    }, [students, query, sortField, sortDir]);
 
     if (courses.length === 0) {
         return (
@@ -128,7 +213,6 @@ export default function TeacherAnalytics({ courses }: { courses: Course[] }) {
         );
     }
 
-    const students = data?.students ?? [];
     const total = students.length;
     const atRisk = data?.at_risk_students ?? 0;
     const onTrack = Math.max(0, total - atRisk);
@@ -138,6 +222,8 @@ export default function TeacherAnalytics({ courses }: { courses: Course[] }) {
                   total,
           )
         : 0;
+
+    const showRows = !isPending && !error;
 
     return (
         <div className="teacher-dashboard">
@@ -186,12 +272,51 @@ export default function TeacherAnalytics({ courses }: { courses: Course[] }) {
                 </div>
             </section>
 
+            <div className="td-toolbar">
+                <div className="td-search">
+                    <SearchBar
+                        value={query}
+                        onChange={setQuery}
+                        placeholder="Поиск по имени студента"
+                    />
+                </div>
+                {showRows && total > 0 && (
+                    <span className="td-toolbar__count">
+                        {visibleStudents.length} из {total}
+                    </span>
+                )}
+            </div>
+
             <section className="td-table">
                 <div className="td-table__head">
-                    <span>Студент</span>
-                    <span>Прогресс</span>
-                    <span>Статус</span>
-                    <span>Неактивен</span>
+                    <SortHeader
+                        label="Студент"
+                        field="name"
+                        activeField={sortField}
+                        dir={sortDir}
+                        onSort={handleSort}
+                    />
+                    <SortHeader
+                        label="Прогресс"
+                        field="progress"
+                        activeField={sortField}
+                        dir={sortDir}
+                        onSort={handleSort}
+                    />
+                    <SortHeader
+                        label="Статус"
+                        field="status"
+                        activeField={sortField}
+                        dir={sortDir}
+                        onSort={handleSort}
+                    />
+                    <SortHeader
+                        label="Неактивен"
+                        field="inactive"
+                        activeField={sortField}
+                        dir={sortDir}
+                        onSort={handleSort}
+                    />
                 </div>
 
                 {isPending && (
@@ -202,15 +327,20 @@ export default function TeacherAnalytics({ courses }: { courses: Course[] }) {
                     <div className="td-state td-state--error">{error}</div>
                 )}
 
-                {!isPending && !error && total === 0 && (
+                {showRows && total === 0 && (
                     <div className="td-state">
                         На этом курсе пока нет записанных студентов.
                     </div>
                 )}
 
-                {!isPending &&
-                    !error &&
-                    students.map((s) => (
+                {showRows && total > 0 && visibleStudents.length === 0 && (
+                    <div className="td-state">
+                        Никого не нашлось по запросу «{query.trim()}».
+                    </div>
+                )}
+
+                {showRows &&
+                    visibleStudents.map((s) => (
                         <StudentRow key={s.student_id} student={s} />
                     ))}
             </section>

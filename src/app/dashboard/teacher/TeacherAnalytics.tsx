@@ -319,30 +319,34 @@ export default function TeacherAnalytics({ courses }: { courses: Course[] }) {
                     />
                 </div>
 
-                {isPending && (
-                    <div className="td-state">Загрузка аналитики…</div>
-                )}
+                <div className="td-table__body">
+                    {isPending && (
+                        <div className="td-state">Загрузка аналитики…</div>
+                    )}
 
-                {!isPending && error && (
-                    <div className="td-state td-state--error">{error}</div>
-                )}
+                    {!isPending && error && (
+                        <div className="td-state td-state--error">{error}</div>
+                    )}
 
-                {showRows && total === 0 && (
-                    <div className="td-state">
-                        На этом курсе пока нет записанных студентов.
-                    </div>
-                )}
+                    {showRows && total === 0 && (
+                        <div className="td-state">
+                            На этом курсе пока нет записанных студентов.
+                        </div>
+                    )}
 
-                {showRows && total > 0 && visibleStudents.length === 0 && (
-                    <div className="td-state">
-                        Никого не нашлось по запросу «{query.trim()}».
-                    </div>
-                )}
+                    {showRows &&
+                        total > 0 &&
+                        visibleStudents.length === 0 && (
+                            <div className="td-state">
+                                Никого не нашлось по запросу «{query.trim()}».
+                            </div>
+                        )}
 
-                {showRows &&
-                    visibleStudents.map((s) => (
-                        <StudentRow key={s.student_id} student={s} />
-                    ))}
+                    {showRows &&
+                        visibleStudents.map((s) => (
+                            <StudentRow key={s.student_id} student={s} />
+                        ))}
+                </div>
             </section>
         </div>
     );

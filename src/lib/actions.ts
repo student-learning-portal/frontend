@@ -4,6 +4,10 @@ import { AuthError } from 'next-auth';
 import { signIn, signOut } from '@/auth';
 import { registerUser } from '@/lib/api/auth';
 
+export async function logout() {
+    await signOut({ redirectTo: '/login' });
+}
+
 type AuthState = {
     error: null | string;
     email: string;

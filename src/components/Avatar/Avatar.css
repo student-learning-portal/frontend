@@ -15,7 +15,7 @@
 
 .avatar {
     display: flex;
-    justify-self: center;
+    margin: 0 auto;
     width: 32px;
     height: 32px;
     background-color: var(--navy);
@@ -25,4 +25,90 @@
     align-items: center;
     font-weight: 700;
     font-size: 12px;
+}
+
+.avatar__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.avatar-wrap {
+    position: relative;
+}
+
+.avatar-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 50;
+    min-width: 240px;
+    padding: 8px;
+    background: var(--white);
+    border: 1px solid var(--navy-8);
+    border-radius: 16px;
+    box-shadow: 0 16px 40px var(--navy-12);
+    animation: avatar-menu-in 120ms ease;
+}
+
+@keyframes avatar-menu-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+}
+
+.avatar-menu__head {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 12px;
+}
+
+.avatar-menu__name {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--navy);
+}
+
+.avatar-menu__role {
+    font-size: 13px;
+    color: var(--navy-56);
+}
+
+.avatar-menu__divider {
+    height: 1px;
+    margin: 6px 0;
+    background: var(--navy-8);
+}
+
+.avatar-menu__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    background: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    text-decoration: none;
+    cursor: pointer;
+    text-align: left;
+    transition: 120ms ease;
+}
+
+.avatar-menu__item:hover {
+    background: var(--navy-8);
+}
+
+.avatar-menu__item--danger {
+    color: var(--error);
+}
+
+.avatar-menu__item--danger:hover {
+    background: var(--error-bg);
 }

@@ -50,7 +50,11 @@ function studentName(s: DashboardStudent): string {
 
 // compareBy returns the ascending comparison for a given field; the caller
 // flips the sign for descending order.
-function compareBy(field: SortField, a: DashboardStudent, b: DashboardStudent): number {
+function compareBy(
+    field: SortField,
+    a: DashboardStudent,
+    b: DashboardStudent,
+): number {
     switch (field) {
         case 'name':
             return studentName(a).localeCompare(studentName(b), 'ru');
@@ -120,7 +124,9 @@ function StudentRow({ student }: { student: DashboardStudent }) {
                             'td-progress__bar' +
                             (atRisk ? ' td-progress__bar--risk' : '')
                         }
-                        style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+                        style={{
+                            width: `${Math.min(100, Math.max(0, progress))}%`,
+                        }}
                     />
                 </div>
                 <span className="td-progress__value">{progress}%</span>
@@ -132,10 +138,7 @@ function StudentRow({ student }: { student: DashboardStudent }) {
                         (atRisk ? 'td-badge--risk' : 'td-badge--ok')
                     }
                 >
-                    <Icon
-                        size={14}
-                        name={atRisk ? 'alert' : 'checkCircle'}
-                    />
+                    <Icon size={14} name={atRisk ? 'alert' : 'checkCircle'} />
                     {atRisk ? 'В зоне риска' : 'На треке'}
                 </span>
             </div>
@@ -189,9 +192,7 @@ export default function TeacherAnalytics({ courses }: { courses: Course[] }) {
     const visibleStudents = useMemo(() => {
         const q = query.trim().toLowerCase();
         const filtered = q
-            ? students.filter((s) =>
-                  studentName(s).toLowerCase().includes(q),
-              )
+            ? students.filter((s) => studentName(s).toLowerCase().includes(q))
             : students;
 
         const sign = sortDir === 'asc' ? 1 : -1;
@@ -263,7 +264,9 @@ export default function TeacherAnalytics({ courses }: { courses: Course[] }) {
                 <div className="td-card td-card--ok">
                     <span className="td-card__label">На треке</span>
                     <span className="td-card__value">{onTrack}</span>
-                    <span className="td-card__hint">учатся в нормальном темпе</span>
+                    <span className="td-card__hint">
+                        учатся в нормальном темпе
+                    </span>
                 </div>
                 <div className="td-card">
                     <span className="td-card__label">Средний прогресс</span>
@@ -334,13 +337,11 @@ export default function TeacherAnalytics({ courses }: { courses: Course[] }) {
                         </div>
                     )}
 
-                    {showRows &&
-                        total > 0 &&
-                        visibleStudents.length === 0 && (
-                            <div className="td-state">
-                                Никого не нашлось по запросу «{query.trim()}».
-                            </div>
-                        )}
+                    {showRows && total > 0 && visibleStudents.length === 0 && (
+                        <div className="td-state">
+                            Никого не нашлось по запросу «{query.trim()}».
+                        </div>
+                    )}
 
                     {showRows &&
                         visibleStudents.map((s) => (

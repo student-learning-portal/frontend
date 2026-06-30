@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 
+import { auth } from '@/auth';
 import NavigationBar from '@/components/StudentNavigationBar/NavigationBar';
 import { catalogNavigationLinkProps } from '@/constants/navigationLinks';
 import './catalogPage.css';
@@ -8,7 +9,12 @@ import Button from '@/components/UI/Button/Button';
 import Avatar from '@/components/Avatar/Avatar';
 import Icon from '@/components/UI/Icon/Icon';
 
-export default function CatalogLayout({ children }: { children: ReactNode }) {
+export default async function CatalogLayout({
+    children,
+}: {
+    children: ReactNode;
+}) {
+    const session = await auth();
     return (
         <div className="catalog-container">
             <header className="catalog-header">
@@ -33,7 +39,10 @@ export default function CatalogLayout({ children }: { children: ReactNode }) {
                             кабинет{' '}
                         </Button>
                     </Link>
-                    <Avatar />
+                    <Avatar
+                        name={session?.user?.fullName}
+                        role={session?.user?.role}
+                    />
                 </div>
             </header>
             {children}

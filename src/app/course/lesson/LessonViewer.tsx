@@ -160,7 +160,10 @@ export default function LessonViewer() {
 
     return (
         <div className="lesson-page">
-            <Link href={`/course/lessons?course=${courseId}`} className="lesson-back">
+            <Link
+                href={`/course/lessons?course=${courseId}`}
+                className="lesson-back"
+            >
                 ← К урокам
             </Link>
 
@@ -198,6 +201,7 @@ export default function LessonViewer() {
                     {audio ? (
                         <audio
                             ref={setMediaRef}
+                            data-testid="lesson-media"
                             src={data.content_url}
                             controls
                             onLoadedMetadata={handleLoadedMetadata}
@@ -209,6 +213,7 @@ export default function LessonViewer() {
                     ) : (
                         <video
                             ref={setMediaRef}
+                            data-testid="lesson-media"
                             src={data.content_url}
                             controls
                             playsInline
@@ -257,7 +262,9 @@ export default function LessonViewer() {
                         ))}
                     </ul>
                 ) : (
-                    <p className="lesson-empty">К уроку не прикреплены материалы.</p>
+                    <p className="lesson-empty">
+                        К уроку не прикреплены материалы.
+                    </p>
                 )}
             </section>
 
@@ -266,7 +273,10 @@ export default function LessonViewer() {
                 !hasMedia) &&
                 !completed && (
                     <div className="lesson-complete">
-                        <Button onClick={handleManualComplete} disabled={saving}>
+                        <Button
+                            onClick={handleManualComplete}
+                            disabled={saving}
+                        >
                             {saving ? 'Сохранение…' : 'Отметить выполненным'}
                         </Button>
                     </div>

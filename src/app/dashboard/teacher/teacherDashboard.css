@@ -1,10 +1,18 @@
 .teacher-dashboard {
     height: 100%;
-    overflow-y: auto;
+    min-height: 0;
+    overflow: hidden;
     padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 24px;
+}
+
+/* Keep everything above the list at its natural size; only the list scrolls. */
+.td-header,
+.td-cards,
+.td-toolbar {
+    flex-shrink: 0;
 }
 
 /* Header */
@@ -118,6 +126,10 @@
 
 /* Table */
 .td-table {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
     border: 1px solid var(--navy-12);
     border-radius: 14px;
     overflow: hidden;
@@ -133,12 +145,20 @@
 }
 
 .td-table__head {
+    flex-shrink: 0;
     background: var(--navy-4);
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: var(--navy-56);
+}
+
+/* Only the student list scrolls; header, cards and toolbar stay fixed. */
+.td-table__body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 }
 
 /* Sortable header buttons */

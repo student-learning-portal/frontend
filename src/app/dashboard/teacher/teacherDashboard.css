@@ -1,0 +1,252 @@
+.teacher-dashboard {
+    height: 100%;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Header */
+.td-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.td-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.td-subtitle {
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--text-secondery);
+}
+
+.td-course-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 240px;
+}
+
+.td-course-picker__label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy-56);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* KPI cards */
+.td-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.td-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px;
+    border: 1px solid var(--navy-12);
+    border-radius: 14px;
+    background: var(--white);
+}
+
+.td-card__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy-56);
+}
+
+.td-card__value {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--navy);
+}
+
+.td-card__hint {
+    font-size: 12px;
+    color: var(--text-secondery);
+}
+
+.td-card--risk {
+    border-color: rgba(179, 38, 30, 0.24);
+    background: var(--error-bg);
+}
+
+.td-card--risk .td-card__value {
+    color: var(--error);
+}
+
+.td-card--ok {
+    border-color: rgba(26, 127, 75, 0.24);
+    background: var(--success-bg);
+}
+
+.td-card--ok .td-card__value {
+    color: var(--success);
+}
+
+/* Table */
+.td-table {
+    border: 1px solid var(--navy-12);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.td-table__head,
+.td-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1.2fr 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+}
+
+.td-table__head {
+    background: var(--navy-4);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--navy-56);
+}
+
+.td-row {
+    border-top: 1px solid var(--navy-8);
+    font-size: 14px;
+}
+
+.td-row__student {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.td-avatar {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--navy-8);
+    color: var(--navy-72);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.td-row__name {
+    font-weight: 600;
+    color: var(--navy);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.td-row__progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.td-progress {
+    flex: 1;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--navy-8);
+    overflow: hidden;
+}
+
+.td-progress__bar {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--success);
+    transition: width 0.3s ease;
+}
+
+.td-progress__bar--risk {
+    background: var(--error);
+}
+
+.td-progress__value {
+    min-width: 40px;
+    text-align: right;
+    font-weight: 600;
+    color: var(--navy-72);
+}
+
+.td-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.td-badge--risk {
+    color: var(--error);
+    background: var(--error-bg);
+}
+
+.td-badge--ok {
+    color: var(--success);
+    background: var(--success-bg);
+}
+
+.td-row__inactive {
+    color: var(--navy-56);
+}
+
+/* States */
+.td-state {
+    padding: 32px 20px;
+    text-align: center;
+    color: var(--text-secondery);
+    font-size: 14px;
+}
+
+.td-state--error {
+    color: var(--error);
+}
+
+.td-empty {
+    margin: auto;
+    max-width: 360px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: var(--navy-56);
+}
+
+.td-empty h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.td-empty p {
+    font-size: 14px;
+    color: var(--text-secondery);
+}
+
+@media (max-width: 1100px) {
+    .td-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

@@ -7,6 +7,8 @@
         "build": "next build",
         "start": "next start -p 3000 -H 0.0.0.0",
         "lint": "eslint",
+        "test": "vitest run",
+        "test:watch": "vitest",
         "prepare": "husky"
     },
     "dependencies": {
@@ -24,11 +26,17 @@
         "@types/node": "^20",
         "@types/react": "^19",
         "@types/react-dom": "^19",
+        "@testing-library/jest-dom": "^6.6.3",
+        "@testing-library/react": "^16.1.0",
+        "@testing-library/user-event": "^14.5.2",
+        "@vitejs/plugin-react": "^4.3.4",
         "eslint": "^10.2.1",
         "eslint-plugin-react-hooks": "^7.1.1",
         "eslint-plugin-react-refresh": "^0.5.2",
         "husky": "^9.1.7",
+        "jsdom": "^25.0.1",
         "prettier": "^3.8.3",
-        "typescript": "^5"
+        "typescript": "^5",
+        "vitest": "^3.0.5"
     }
 }

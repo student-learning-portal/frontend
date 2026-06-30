@@ -82,7 +82,10 @@ export async function getTeacherDashboard(
         });
 
         if (response.ok) {
-            return { ok: true, data: (await response.json()) as TeacherDashboard };
+            return {
+                ok: true,
+                data: (await response.json()) as TeacherDashboard,
+            };
         }
 
         switch (response.status) {
@@ -96,7 +99,10 @@ export async function getTeacherDashboard(
             case 404:
                 return { ok: false, message: 'Курс не найден.' };
             default:
-                return { ok: false, message: 'Не удалось загрузить аналитику.' };
+                return {
+                    ok: false,
+                    message: 'Не удалось загрузить аналитику.',
+                };
         }
     } catch (err) {
         console.error(`[getTeacherDashboard] fetch failed for ${url}:`, err);

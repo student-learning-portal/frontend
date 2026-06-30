@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
 import { Course } from '@/models/Course';
-import { getCourseById } from '@/lib/api/courses';
+import { getCourseById, getMyCourses } from '@/lib/api/courses';
 import { checkout, refund } from '@/lib/api/purchase';
 import Button from '@/components/UI/Button/Button';
 import Icon from '@/components/UI/Icon/Icon';
@@ -13,19 +13,6 @@ import Icon from '@/components/UI/Icon/Icon';
 function formatMoney(amount: number, _currency?: string): string {
     void _currency;
     return `${amount.toLocaleString('ru-RU')} ₽`;
-}
-
-const ownedKey = (id: string) => `owned_course_${id}`;
-
-function readOwned(id: string): boolean {
-    if (typeof window === 'undefined') return false;
-    return window.localStorage.getItem(ownedKey(id)) === '1';
-}
-
-function writeOwned(id: string, owned: boolean) {
-    if (typeof window === 'undefined') return;
-    if (owned) window.localStorage.setItem(ownedKey(id), '1');
-    else window.localStorage.removeItem(ownedKey(id));
 }
 
 export default function CourseDetail() {
@@ -50,11 +37,14 @@ export default function CourseDetail() {
     useEffect(() => {
         let active = true;
         (async () => {
-            const data = await getCourseById(id);
+            const [data, myCourses] = await Promise.all([
+                getCourseById(id),
+                getMyCourses(),
+            ]);
             if (!active) return;
             setCourse(data);
             setNotFound(!data);
-            setOwned(data ? readOwned(id) : false);
+            setOwned(myCourses.some((c) => c.id === id));
             setLoading(false);
         })();
         return () => {
@@ -70,7 +60,6 @@ export default function CourseDetail() {
             const res = await checkout(course.id);
             if (res.ok) {
                 setOwned(true);
-                writeOwned(course.id, true);
                 setBalance(res.data.balance);
                 setFeedback({
                     type: 'success',
@@ -93,7 +82,6 @@ export default function CourseDetail() {
             const res = await refund(course.id);
             if (res.ok) {
                 setOwned(false);
-                writeOwned(course.id, false);
                 setBalance(res.data.balance);
                 setFeedback({
                     type: 'success',

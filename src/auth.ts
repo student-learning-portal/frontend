@@ -20,7 +20,7 @@ export const { auth, signIn, signOut } = NextAuth({
                     return {
                         id: result.user.id,
                         email: result.user.email,
-                        fullName: result.user.fullName,
+                        fullName: result.user.full_name,
                         role: result.user.role,
                         token: result.token,
                     } as User;

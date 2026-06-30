@@ -1,11 +1,7 @@
 'use server';
 
 import { auth } from '@/auth';
-import {
-    LessonData,
-    LessonProgress,
-    LessonSummary,
-} from '@/models/Lesson';
+import { LessonData, LessonProgress, LessonSummary } from '@/models/Lesson';
 
 export type PlayerError =
     | 'unauthenticated'
@@ -208,17 +204,52 @@ type RawLesson = Partial<LessonSummary> & { id?: string };
 // Удалить этот блок, когда появится реальный эндпоинт.
 const SEED_LESSONS: Record<string, LessonSummary[]> = {
     'aaaaaaa1-0000-0000-0000-000000000001': [
-        { lesson_id: 'c0000001-0000-0000-0000-000000000001', title: 'Установка и первый скрипт', lesson_type: 'video', position: 1 },
-        { lesson_id: 'c0000001-0000-0000-0000-000000000002', title: 'Переменные и типы данных', lesson_type: 'text', position: 2 },
-        { lesson_id: 'c0000001-0000-0000-0000-000000000003', title: 'Проверочный тест', lesson_type: 'quiz', position: 3 },
+        {
+            lesson_id: 'c0000001-0000-0000-0000-000000000001',
+            title: 'Установка и первый скрипт',
+            lesson_type: 'video',
+            position: 1,
+        },
+        {
+            lesson_id: 'c0000001-0000-0000-0000-000000000002',
+            title: 'Переменные и типы данных',
+            lesson_type: 'text',
+            position: 2,
+        },
+        {
+            lesson_id: 'c0000001-0000-0000-0000-000000000003',
+            title: 'Проверочный тест',
+            lesson_type: 'quiz',
+            position: 3,
+        },
     ],
     'aaaaaaa2-0000-0000-0000-000000000002': [
-        { lesson_id: 'c0000002-0000-0000-0000-000000000001', title: 'Что такое компонент', lesson_type: 'video', position: 1 },
-        { lesson_id: 'c0000002-0000-0000-0000-000000000002', title: 'Хуки useState/useEffect', lesson_type: 'video', position: 2 },
+        {
+            lesson_id: 'c0000002-0000-0000-0000-000000000001',
+            title: 'Что такое компонент',
+            lesson_type: 'video',
+            position: 1,
+        },
+        {
+            lesson_id: 'c0000002-0000-0000-0000-000000000002',
+            title: 'Хуки useState/useEffect',
+            lesson_type: 'video',
+            position: 2,
+        },
     ],
     'bbbbbbb1-0000-0000-0000-000000000003': [
-        { lesson_id: 'c0000003-0000-0000-0000-000000000001', title: 'Производные', lesson_type: 'video', position: 1 },
-        { lesson_id: 'c0000003-0000-0000-0000-000000000002', title: 'Тренировочный вариант', lesson_type: 'quiz', position: 2 },
+        {
+            lesson_id: 'c0000003-0000-0000-0000-000000000001',
+            title: 'Производные',
+            lesson_type: 'video',
+            position: 1,
+        },
+        {
+            lesson_id: 'c0000003-0000-0000-0000-000000000002',
+            title: 'Тренировочный вариант',
+            lesson_type: 'quiz',
+            position: 2,
+        },
     ],
 };
 
@@ -226,10 +257,30 @@ const SEED_LESSONS: Record<string, LessonSummary[]> = {
 // посмотреть, как выглядит страница уроков. Удалить вместе с SEED_LESSONS,
 // когда появится реальный эндпоинт.
 const PLACEHOLDER_LESSONS: LessonSummary[] = [
-    { lesson_id: 'placeholder-1', title: 'Введение в курс', lesson_type: 'video', position: 1 },
-    { lesson_id: 'placeholder-2', title: 'Основные понятия', lesson_type: 'text', position: 2 },
-    { lesson_id: 'placeholder-3', title: 'Практическое видео', lesson_type: 'video', position: 3 },
-    { lesson_id: 'placeholder-4', title: 'Проверочное задание', lesson_type: 'quiz', position: 4 },
+    {
+        lesson_id: 'placeholder-1',
+        title: 'Введение в курс',
+        lesson_type: 'video',
+        position: 1,
+    },
+    {
+        lesson_id: 'placeholder-2',
+        title: 'Основные понятия',
+        lesson_type: 'text',
+        position: 2,
+    },
+    {
+        lesson_id: 'placeholder-3',
+        title: 'Практическое видео',
+        lesson_type: 'video',
+        position: 3,
+    },
+    {
+        lesson_id: 'placeholder-4',
+        title: 'Проверочное задание',
+        lesson_type: 'quiz',
+        position: 4,
+    },
 ];
 
 export async function getCourseLessons(courseId: string) {

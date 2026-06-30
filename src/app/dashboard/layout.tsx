@@ -5,7 +5,7 @@ import { auth } from '@/auth';
 import StudentNavigationBar from '@/components/StudentNavigationBar/NavigationBar';
 import Icon from '@/components/UI/Icon/Icon';
 import SearchBar from '@/components/SearchBar/SearchBar';
-import LogoutButton from '@/components/LogoutButton/LogoutButton';
+import Avatar from '@/components/Avatar/Avatar';
 import {
     studentNavigationLinkProps,
     teacherNavigationLinkProps,
@@ -41,7 +41,10 @@ export default async function MainLayout({
                             alignSelf: 'center',
                         }}
                     ></Icon>
-                    <LogoutButton />
+                    <Avatar
+                        name={session?.user?.fullName}
+                        role={session?.user?.role}
+                    />
                 </div>
             </div>
             <div className="side-bar">

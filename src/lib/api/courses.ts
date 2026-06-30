@@ -67,3 +67,25 @@ export async function getCourseById(id: string): Promise<Course | null> {
     const courses = normalizeCourses(res);
     return courses.find((c) => c.id === id) ?? null;
 }
+
+export async function getMyCourses(): Promise<Course[]> {
+    const session = await auth();
+    if (!session?.accessToken) return [];
+
+    const url = `${process.env.BACKEND_URL}/api/v1/users/me/courses`;
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${session.accessToken}` },
+            cache: 'no-store',
+        });
+        if (!response.ok) {
+            console.error(`[getMyCourses] ${response.status} from ${url}`);
+            return [];
+        }
+        return normalizeCourses(await response.json());
+    } catch (err) {
+        console.error(`[getMyCourses] fetch failed for ${url}:`, err);
+        return [];
+    }
+}

@@ -85,7 +85,8 @@ async function postJson<T>(
                 return {
                     ok: false,
                     code: 'unknown',
-                    message: 'Не удалось обработать операцию. Попробуйте позже.',
+                    message:
+                        'Не удалось обработать операцию. Попробуйте позже.',
                 };
         }
     } catch (err) {

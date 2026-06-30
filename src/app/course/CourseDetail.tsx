@@ -189,9 +189,15 @@ export default function CourseDetail() {
                                     Доступ открыт
                                 </div>
                                 <p className="course-room__text">
-                                    Вы можете проходить курс. Уроки и материалы
-                                    откроются здесь.
+                                    Все уроки и материалы курса доступны.
                                 </p>
+                                <Link
+                                    href={`/course/lessons?course=${course.id}`}
+                                    className="course-room__cta"
+                                >
+                                    <Icon name="play" size={18} />
+                                    Перейти к урокам
+                                </Link>
                             </div>
                         ) : (
                             <div className="course-locked">

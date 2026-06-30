@@ -1,15 +1,15 @@
 name: Deploy
 
 on:
-  push:
-    branches: [main]
+    push:
+        branches: [main]
 
 jobs:
-  deploy:
-    runs-on: self-hosted
-    steps:
-      - name: Pull latest changes
-        run: cd /home/runner/frontend && git pull
+    deploy:
+        runs-on: self-hosted
+        steps:
+            - name: Pull latest changes
+              run: cd /home/runner/frontend && git pull
 
-      - name: Restart containers
-        run: cd /home/runner/infra && docker compose up -d --build
+            - name: Restart containers
+              run: cd /home/runner/infra && docker compose up -d --build

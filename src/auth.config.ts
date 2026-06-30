@@ -8,11 +8,14 @@ export const authConfig = {
         async jwt({ token, user }) {
             if (user) {
                 token.accessToken = user.token;
-                token.id = user.id;
+                token.id = user.id as string;
+                token.fullName = user.fullName;
+                token.role = user.role;
             }
             return token;
         },
         async session({ session, token }) {
+            session.user.id = token.id as string;
             session.user.fullName = token.fullName as string;
             session.user.role = token.role as 'teacher' | 'student';
             session.accessToken = token.accessToken as string;

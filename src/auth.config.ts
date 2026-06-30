@@ -23,7 +23,8 @@ export const authConfig = {
             const isLoggedIn = !!auth?.user;
             const isNotPublicRoute =
                 nextUrl.pathname.startsWith('/dashboard') ||
-                nextUrl.pathname.startsWith('/catalog');
+                nextUrl.pathname.startsWith('/catalog') ||
+                nextUrl.pathname.startsWith('/course');
 
             if (isNotPublicRoute) {
                 return isLoggedIn;

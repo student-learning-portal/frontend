@@ -1,6 +1,7 @@
 'use server';
 
 import { auth } from '@/auth';
+import { Course } from '@/models/Course';
 
 type FilterParams = {
     search?: string;
@@ -49,4 +50,20 @@ export async function getCourses(filters: FilterParams) {
         console.error(`[getCourses] fetch failed for ${url}:`, err);
         return null;
     }
+}
+
+function normalizeCourses(res: unknown): Course[] {
+    if (!res) return [];
+    if (Array.isArray(res)) return res as Course[];
+    const obj = res as Record<string, unknown>;
+    const list = obj.items ?? obj.courses ?? obj.data ?? obj.results;
+    return Array.isArray(list) ? (list as Course[]) : [];
+}
+
+export async function getCourseById(id: string): Promise<Course | null> {
+    if (!id) return null;
+    const res = await getCourses({ page_size: 200 });
+    if (res === null) return null;
+    const courses = normalizeCourses(res);
+    return courses.find((c) => c.id === id) ?? null;
 }

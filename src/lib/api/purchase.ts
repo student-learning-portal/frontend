@@ -20,6 +20,16 @@ export type RefundData = {
     balance: number;
 };
 
+export type TransactionEntry = {
+    transaction_id: string;
+    course_id: string;
+    course_title: string;
+    amount: number;
+    currency: string;
+    status: string;
+    created_at: string;
+};
+
 export type PurchaseResult<T> =
     | { ok: true; data: T }
     | { ok: false; code: PurchaseErrorCode; message: string };
@@ -27,6 +37,7 @@ export type PurchaseResult<T> =
 export type PurchaseErrorCode =
     | 'unauthenticated'
     | 'insufficient_funds'
+    | 'already_purchased'
     | 'not_found'
     | 'unknown';
 
@@ -73,7 +84,13 @@ async function postJson<T>(
                 return {
                     ok: false,
                     code: 'insufficient_funds',
-                    message: 'Недостаточно средств на виртуальном кошельке.',
+                    message: 'Недостаточно монет на балансе.',
+                };
+            case 409:
+                return {
+                    ok: false,
+                    code: 'already_purchased',
+                    message: 'Курс уже куплен.',
                 };
             case 404:
                 return {
@@ -109,4 +126,28 @@ export async function refund(courseId: string) {
     return postJson<RefundData>('/api/v1/purchase/refund', {
         course_id: courseId,
     });
+}
+
+export async function getHistory(): Promise<TransactionEntry[]> {
+    const session = await auth();
+    if (!session?.accessToken) return [];
+
+    const url = `${process.env.BACKEND_URL}/api/v1/purchase/history`;
+    try {
+        const response = await fetch(url, {
+            headers: { Authorization: `Bearer ${session.accessToken}` },
+            cache: 'no-store',
+        });
+        if (!response.ok) {
+            console.error(`[purchase] ${response.status} from ${url}`);
+            return [];
+        }
+        const data = (await response.json()) as {
+            transactions: TransactionEntry[];
+        };
+        return data.transactions ?? [];
+    } catch (err) {
+        console.error(`[purchase] fetch failed for ${url}:`, err);
+        return [];
+    }
 }

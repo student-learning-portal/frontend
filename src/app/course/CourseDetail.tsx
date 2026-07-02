@@ -12,7 +12,7 @@ import Icon from '@/components/UI/Icon/Icon';
 
 function formatMoney(amount: number, _currency?: string): string {
     void _currency;
-    return `${amount.toLocaleString('ru-RU')} ₽`;
+    return `${amount.toLocaleString('ru-RU')} монет`;
 }
 
 export default function CourseDetail() {
@@ -63,7 +63,7 @@ export default function CourseDetail() {
                 setBalance(res.data.balance);
                 setFeedback({
                     type: 'success',
-                    text: `Оплата прошла успешно. Остаток на кошельке: ${formatMoney(
+                    text: `Оплата прошла успешно. Баланс монет: ${formatMoney(
                         res.data.balance,
                         res.data.currency,
                     )}.`,
@@ -85,10 +85,10 @@ export default function CourseDetail() {
                 setBalance(res.data.balance);
                 setFeedback({
                     type: 'success',
-                    text: `Курс возвращён. На кошелёк зачислено ${formatMoney(
+                    text: `Курс возвращён. Начислено ${formatMoney(
                         res.data.amount,
                         res.data.currency,
-                    )}. Баланс: ${formatMoney(
+                    )}. Баланс монет: ${formatMoney(
                         res.data.balance,
                         res.data.currency,
                     )}.`,
@@ -251,14 +251,14 @@ export default function CourseDetail() {
 
                     {balance !== null && (
                         <div className="course-buybox__wallet">
-                            Виртуальный кошелёк:{' '}
+                            Баланс монет:{' '}
                             <strong>{formatMoney(balance, currency)}</strong>
                         </div>
                     )}
 
                     <p className="course-buybox__note">
-                        Оплата происходит в песочнице — реальные деньги не
-                        списываются.
+                        Оплата происходит монетами в песочнице — реальные
+                        деньги не списываются.
                     </p>
                 </aside>
             </div>
@@ -286,7 +286,7 @@ export default function CourseDetail() {
                                     <strong>
                                         {formatMoney(course.price, currency)}
                                     </strong>
-                                    ? Сумма спишется с виртуального кошелька.
+                                    ? Монеты спишутся с баланса.
                                 </>
                             ) : (
                                 <>
@@ -295,7 +295,7 @@ export default function CourseDetail() {
                                     <strong>
                                         {formatMoney(course.price, currency)}
                                     </strong>{' '}
-                                    вернётся на кошелёк.
+                                    вернутся на баланс.
                                 </>
                             )}
                         </p>

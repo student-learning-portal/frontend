@@ -9,6 +9,7 @@ export type Me = {
     email: string;
     full_name: string;
     role: 'teacher' | 'student';
+    balance: number;
     avatar_url?: string;
 };
 

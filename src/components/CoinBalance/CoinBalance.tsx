@@ -4,6 +4,7 @@ import './CoinBalance.css';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getMe } from '@/lib/api/profile';
+import { onCoinBalanceUpdate } from './coinBalanceEvents';
 
 export default function CoinBalance() {
     const [balance, setBalance] = useState<number | null>(null);
@@ -18,6 +19,10 @@ export default function CoinBalance() {
         return () => {
             active = false;
         };
+    }, []);
+
+    useEffect(() => {
+        return onCoinBalanceUpdate((newBalance) => setBalance(newBalance));
     }, []);
 
     if (balance === null) return null;

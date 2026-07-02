@@ -9,6 +9,7 @@ import { getCourseById, getMyCourses } from '@/lib/api/courses';
 import { checkout, refund } from '@/lib/api/purchase';
 import Button from '@/components/UI/Button/Button';
 import Icon from '@/components/UI/Icon/Icon';
+import { emitCoinBalanceUpdate } from '@/components/CoinBalance/coinBalanceEvents';
 
 function formatMoney(amount: number, _currency?: string): string {
     void _currency;
@@ -61,6 +62,7 @@ export default function CourseDetail() {
             if (res.ok) {
                 setOwned(true);
                 setBalance(res.data.balance);
+                emitCoinBalanceUpdate(res.data.balance);
                 setFeedback({
                     type: 'success',
                     text: `Оплата прошла успешно. Баланс: ${formatMoney(
@@ -83,6 +85,7 @@ export default function CourseDetail() {
             if (res.ok) {
                 setOwned(false);
                 setBalance(res.data.balance);
+                emitCoinBalanceUpdate(res.data.balance);
                 setFeedback({
                     type: 'success',
                     text: `Курс возвращён. Начислено ${formatMoney(

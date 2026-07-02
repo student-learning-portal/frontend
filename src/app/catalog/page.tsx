@@ -7,7 +7,7 @@ import { SortingValues } from '@/constants/sortingValues';
 import InputRange from '@/components/UI/Input-range/InputRange';
 import { useEffect, useMemo, useState } from 'react';
 import CourseList from '@/components/CoursesList/CoursesList';
-import { getCourses } from '@/lib/api/courses';
+import { getCourses, getMyCourses } from '@/lib/api/courses';
 import { Course } from '@/models/Course';
 import { SelectOption } from '@/types/selectOption';
 import Icon from '@/components/UI/Icon/Icon';
@@ -40,6 +40,9 @@ export default function CatalogPage() {
     const [page, setPage] = useState(1);
 
     const [allCourses, setAllCourses] = useState<Course[]>([]);
+    const [ownedCourseIds, setOwnedCourseIds] = useState<Set<string>>(
+        new Set(),
+    );
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -49,8 +52,12 @@ export default function CatalogPage() {
             setLoading(true);
             setError(null);
             try {
-                const res = await getCourses({ page_size: 20 });
+                const [res, myCourses] = await Promise.all([
+                    getCourses({ page_size: 20 }),
+                    getMyCourses(),
+                ]);
                 if (!active) return;
+                setOwnedCourseIds(new Set(myCourses.map((c) => c.id)));
                 if (res === null) {
                     setError(
                         'Не удалось загрузить курсы. Проверьте, что бэкенд запущен и доступен по BACKEND_URL.',
@@ -172,7 +179,11 @@ export default function CatalogPage() {
                     {error}
                 </div>
             ) : (
-                <CourseList courses={pageItems} loading={loading} />
+                <CourseList
+                    courses={pageItems}
+                    loading={loading}
+                    ownedCourseIds={ownedCourseIds}
+                />
             )}
 
             {!loading && !error && totalPages > 1 && (

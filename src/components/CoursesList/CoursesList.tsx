@@ -7,9 +7,14 @@ import { Course } from '@/models/Course';
 type Props = {
     courses: Course[];
     loading?: boolean;
+    ownedCourseIds?: Set<string>;
 };
 
-export default function CourseList({ courses, loading }: Props) {
+export default function CourseList({
+    courses,
+    loading,
+    ownedCourseIds,
+}: Props) {
     if (loading) {
         return <div className="course-list__state">Загрузка курсов…</div>;
     }
@@ -25,7 +30,11 @@ export default function CourseList({ courses, loading }: Props) {
     return (
         <div className="course-list">
             {courses.map((course) => (
-                <CourseCard key={course.id} course={course} />
+                <CourseCard
+                    key={course.id}
+                    course={course}
+                    owned={ownedCourseIds?.has(course.id) ?? false}
+                />
             ))}
         </div>
     );

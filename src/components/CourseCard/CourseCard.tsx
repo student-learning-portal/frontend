@@ -3,6 +3,7 @@
 import './CourseCard.css';
 import Link from 'next/link';
 import { Course } from '@/models/Course';
+import Icon from '@/components/UI/Icon/Icon';
 
 const LEVELS = ['Начальный', 'Средний', 'Продвинутый'];
 
@@ -15,14 +16,15 @@ function hash(value: string): number {
 }
 
 function formatPrice(price: number): string {
-    return `${price.toLocaleString('ru-RU')} ₽`;
+    return `${price.toLocaleString('ru-RU')} 🪙`;
 }
 
 type Props = {
     course: Course;
+    owned?: boolean;
 };
 
-export default function CourseCard({ course }: Props) {
+export default function CourseCard({ course, owned = false }: Props) {
     // Заглушки: бэкенд пока не отдаёт преподавателя, уровень и рейтинг.
     const seed = hash(course.id);
     const level = LEVELS[seed % LEVELS.length];
@@ -30,7 +32,16 @@ export default function CourseCard({ course }: Props) {
 
     return (
         <Link href={`/course?id=${course.id}`} className="course-card">
-            <div className="course-card__banner" data-variant={bannerVariant} />
+            <div className="course-card__banner" data-variant={bannerVariant}>
+                <span
+                    className={`course-card__owned-badge course-card__owned-badge--${
+                        owned ? 'owned' : 'locked'
+                    }`}
+                >
+                    <Icon name={owned ? 'checkCircle' : 'lock'} size={13} />
+                    {owned ? 'Куплен' : 'Не куплен'}
+                </span>
+            </div>
             <div className="course-card__body">
                 <div className="course-card__tags">
                     <span className="course-card__tag">{course.subject}</span>

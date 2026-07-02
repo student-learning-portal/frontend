@@ -16,8 +16,33 @@
 }
 
 .course-card__banner {
+    position: relative;
     height: 150px;
     background: linear-gradient(135deg, #0a0f4a 0%, #1b2370 100%);
+}
+
+.course-card__owned-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+}
+
+.course-card__owned-badge--owned {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.course-card__owned-badge--locked {
+    background: rgba(255, 255, 255, 0.18);
+    color: var(--white);
 }
 
 .course-card__banner[data-variant='0'] {

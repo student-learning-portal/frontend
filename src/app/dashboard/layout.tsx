@@ -6,6 +6,7 @@ import StudentNavigationBar from '@/components/StudentNavigationBar/NavigationBa
 import Icon from '@/components/UI/Icon/Icon';
 import SearchBar from '@/components/SearchBar/SearchBar';
 import Avatar from '@/components/Avatar/Avatar';
+import CoinBalance from '@/components/CoinBalance/CoinBalance';
 import {
     studentNavigationLinkProps,
     teacherNavigationLinkProps,
@@ -34,6 +35,7 @@ export default async function MainLayout({
             <div className="top-bar">
                 <SearchBar></SearchBar>
                 <div className="profile-part">
+                    <CoinBalance />
                     <Icon
                         size={20}
                         name="bell"

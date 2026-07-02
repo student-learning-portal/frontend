@@ -45,6 +45,36 @@
     border-radius: 16px;
 }
 
+.lessons-locked {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 48px 24px;
+    text-align: center;
+    background: var(--navy-4);
+    border: 1px dashed var(--navy-24);
+    border-radius: 16px;
+    color: var(--navy-72);
+}
+
+.lessons-locked__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--navy-8);
+    color: var(--navy-56);
+}
+
+.lessons-locked__text {
+    margin: 0;
+    max-width: 420px;
+    font-size: 15px;
+}
+
 .lessons-grid {
     list-style: none;
     margin: 0;

@@ -8,6 +8,7 @@ import './catalogPage.css';
 import Button from '@/components/UI/Button/Button';
 import Avatar from '@/components/Avatar/Avatar';
 import Icon from '@/components/UI/Icon/Icon';
+import CoinBalance from '@/components/CoinBalance/CoinBalance';
 
 export default async function CatalogLayout({
     children,
@@ -33,6 +34,7 @@ export default async function CatalogLayout({
                     ></NavigationBar>
                 </div>
                 <div className="profile-navigation">
+                    <CoinBalance />
                     <Link href="/dashboard">
                         <Button variant="secondary">
                             <Icon name="grid" size={20}></Icon> Личный

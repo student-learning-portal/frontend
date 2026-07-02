@@ -6,9 +6,10 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Course } from '@/models/Course';
 import { LessonSummary } from '@/models/Lesson';
-import { getCourseById } from '@/lib/api/courses';
+import { getCourseById, getMyCourses } from '@/lib/api/courses';
 import { getCourseLessons } from '@/lib/api/player';
 import Icon from '@/components/UI/Icon/Icon';
+import Button from '@/components/UI/Button/Button';
 
 const TYPE_LABEL: Record<string, string> = {
     video: 'Видео',
@@ -32,19 +33,28 @@ export default function CourseLessons() {
 
     const [course, setCourse] = useState<Course | null>(null);
     const [lessons, setLessons] = useState<LessonSummary[]>([]);
-    const [status, setStatus] = useState<'loading' | 'ready' | 'unavailable'>(
-        'loading',
-    );
+    const [status, setStatus] = useState<
+        'loading' | 'ready' | 'unavailable' | 'locked'
+    >('loading');
 
     useEffect(() => {
         let active = true;
         (async () => {
-            const [courseData, lessonsRes] = await Promise.all([
+            const [courseData, lessonsRes, myCourses] = await Promise.all([
                 getCourseById(courseId),
                 getCourseLessons(courseId),
+                getMyCourses(),
             ]);
             if (!active) return;
             setCourse(courseData);
+
+            const owned = myCourses.some((c) => c.id === courseId);
+            if (!owned) {
+                setLessons([]);
+                setStatus('locked');
+                return;
+            }
+
             if (lessonsRes.ok) {
                 setLessons(lessonsRes.data);
                 setStatus('ready');
@@ -79,6 +89,21 @@ export default function CourseLessons() {
 
             {status === 'loading' && (
                 <div className="lessons-state">Загрузка уроков…</div>
+            )}
+
+            {status === 'locked' && (
+                <div className="lessons-locked">
+                    <span className="lessons-locked__icon">
+                        <Icon name="lock" size={26} />
+                    </span>
+                    <p className="lessons-locked__text">
+                        Курс не куплен. Чтобы открыть уроки, перейдите на
+                        страницу курса и оформите покупку.
+                    </p>
+                    <Link href={`/course?id=${courseId}`}>
+                        <Button>Перейти к курсу</Button>
+                    </Link>
+                </div>
             )}
 
             {status === 'unavailable' && (

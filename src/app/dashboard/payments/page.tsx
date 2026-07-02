@@ -4,7 +4,7 @@ import { getHistory, TransactionEntry } from '@/lib/api/purchase';
 import Icon from '@/components/UI/Icon/Icon';
 
 function formatCoins(amount: number): string {
-    return `${amount.toLocaleString('ru-RU')} монет`;
+    return `${amount.toLocaleString('ru-RU')} 🪙`;
 }
 
 function formatDate(iso: string): string {

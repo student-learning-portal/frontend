@@ -28,16 +28,21 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    padding: 4px 10px;
+    padding: 5px 12px;
     border-radius: 999px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.2px;
     backdrop-filter: blur(4px);
 }
 
 .course-card__owned-badge--owned {
-    background: var(--success-bg);
-    color: var(--success);
+    background: var(--success);
+    color: var(--white);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow:
+        0 4px 12px rgba(26, 127, 75, 0.45),
+        0 0 0 3px rgba(26, 127, 75, 0.18);
 }
 
 .course-card__owned-badge--locked {

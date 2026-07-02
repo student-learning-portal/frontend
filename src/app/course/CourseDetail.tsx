@@ -12,7 +12,7 @@ import Icon from '@/components/UI/Icon/Icon';
 
 function formatMoney(amount: number, _currency?: string): string {
     void _currency;
-    return `${amount.toLocaleString('ru-RU')} монет`;
+    return `${amount.toLocaleString('ru-RU')} 🪙`;
 }
 
 export default function CourseDetail() {
@@ -63,7 +63,7 @@ export default function CourseDetail() {
                 setBalance(res.data.balance);
                 setFeedback({
                     type: 'success',
-                    text: `Оплата прошла успешно. Баланс монет: ${formatMoney(
+                    text: `Оплата прошла успешно. Баланс: ${formatMoney(
                         res.data.balance,
                         res.data.currency,
                     )}.`,
@@ -88,7 +88,7 @@ export default function CourseDetail() {
                     text: `Курс возвращён. Начислено ${formatMoney(
                         res.data.amount,
                         res.data.currency,
-                    )}. Баланс монет: ${formatMoney(
+                    )}. Баланс: ${formatMoney(
                         res.data.balance,
                         res.data.currency,
                     )}.`,
@@ -251,14 +251,14 @@ export default function CourseDetail() {
 
                     {balance !== null && (
                         <div className="course-buybox__wallet">
-                            Баланс монет:{' '}
+                            Баланс:{' '}
                             <strong>{formatMoney(balance, currency)}</strong>
                         </div>
                     )}
 
                     <p className="course-buybox__note">
-                        Оплата происходит монетами в песочнице — реальные
-                        деньги не списываются.
+                        Оплата происходит 🪙 в песочнице — реальные деньги не
+                        списываются.
                     </p>
                 </aside>
             </div>

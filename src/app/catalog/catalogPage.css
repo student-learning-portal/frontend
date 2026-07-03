@@ -1,32 +1,6 @@
-.catalog-container {
-    display: flex;
-    flex-direction: column;
-}
-
-.catalog-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    height: 64px;
-    padding: 0 32px;
+.catalog-subnav {
+    padding: 16px 32px 0;
     border-bottom: 1px solid var(--navy-12);
-}
-
-.catalog-navigation {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 32px;
-}
-
-.profile-navigation {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
 }
 
 .course-container {

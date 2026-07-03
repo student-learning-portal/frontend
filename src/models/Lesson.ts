@@ -1,6 +1,7 @@
 export type LessonType = 'video' | 'text' | 'quiz' | 'mixed';
 
 export interface LessonMaterial {
+    id?: string;
     title: string;
     url: string;
     type: string;
@@ -22,6 +23,7 @@ export interface LessonData {
     position: number;
     content_url: string;
     duration_seconds: number;
+    media_type?: 'video' | 'audio';
     materials: LessonMaterial[];
     last_progress_seconds: number;
     percent_complete: number;

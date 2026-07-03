@@ -1,0 +1,174 @@
+.teacher-courses {
+    width: 100%;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.tcl-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.tcl-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.tcl-subtitle {
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--text-secondery);
+}
+
+.tcl-create {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: var(--navy);
+    color: var(--white);
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: 120ms ease;
+}
+
+.tcl-create:hover {
+    background: var(--navy-94);
+}
+
+.tcl-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.tcl-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    border: 1px solid var(--navy-12);
+    border-radius: 14px;
+    background: var(--white);
+    color: var(--navy);
+    transition: 120ms ease;
+}
+
+.tcl-card:hover {
+    border-color: var(--navy-24);
+    box-shadow: 0 8px 24px var(--navy-8);
+}
+
+.tcl-card__tags {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tcl-tag {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--navy-8);
+    color: var(--navy-72);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.tcl-badge {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.tcl-badge--draft {
+    background: var(--warning-bg);
+    color: var(--warning);
+}
+
+.tcl-badge--published {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.tcl-badge--archived {
+    background: var(--navy-8);
+    color: var(--navy-56);
+}
+
+.tcl-card__title {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.tcl-card__desc {
+    font-size: 13px;
+    color: var(--text-secondery);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.tcl-card__footer {
+    margin-top: auto;
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--navy-8);
+}
+
+.tcl-card__price {
+    font-weight: 700;
+}
+
+.tcl-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy-72);
+}
+
+.tcl-empty {
+    margin: 60px auto;
+    max-width: 360px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: var(--navy-56);
+}
+
+.tcl-empty h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.tcl-empty p {
+    font-size: 14px;
+    color: var(--text-secondery);
+}
+
+.tcl-empty__link {
+    margin-top: 8px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: var(--navy);
+    color: var(--white);
+    font-weight: 600;
+    font-size: 14px;
+}

@@ -1,0 +1,355 @@
+/* Shared styles for the teacher course/lesson authoring pages
+   (new course, course editor, lesson content editor). */
+
+.tf-page {
+    width: 100%;
+    max-width: 860px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.tf-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy-56);
+    width: fit-content;
+}
+
+.tf-back:hover {
+    color: var(--navy);
+}
+
+.tf-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.tf-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.tf-subtitle {
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--text-secondery);
+}
+
+.tf-status-badge {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.tf-status-badge--draft {
+    background: var(--warning-bg);
+    color: var(--warning);
+}
+
+.tf-status-badge--published {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.tf-status-badge--archived {
+    background: var(--navy-8);
+    color: var(--navy-56);
+}
+
+.tf-card {
+    padding: 24px;
+    border: 1px solid var(--navy-8);
+    border-radius: 16px;
+}
+
+.tf-notice {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+.tf-notice--success {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.tf-notice--error {
+    background: var(--error-bg);
+    color: var(--error);
+}
+
+.tf-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.tf-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.tf-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tf-label {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.tf-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--navy-12);
+    border-radius: 12px;
+    font: inherit;
+    color: var(--navy);
+    background: var(--white);
+    outline: none;
+    transition: 120ms ease;
+}
+
+.tf-input:focus {
+    border-color: var(--navy);
+}
+
+.tf-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.tf-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.tf-actions .base-button {
+    width: auto;
+    min-width: 140px;
+}
+
+.tf-danger-link {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--error);
+}
+
+.tf-danger-link:hover {
+    text-decoration: underline;
+}
+
+/* Sections (lessons list, media, materials) */
+.tf-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.tf-section__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.tf-section__title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.tf-empty {
+    padding: 20px;
+    text-align: center;
+    color: var(--text-secondery);
+    font-size: 14px;
+    border: 1px dashed var(--navy-12);
+    border-radius: 12px;
+}
+
+/* Lesson rows */
+.tf-lesson-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tf-lesson-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--navy-8);
+    border-radius: 12px;
+}
+
+.tf-lesson-row__num {
+    flex-shrink: 0;
+    width: 24px;
+    color: var(--navy-56);
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.tf-lesson-row__main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.tf-lesson-row__title {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tf-lesson-row__type {
+    font-size: 12px;
+    color: var(--navy-56);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.tf-lesson-row__actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.tf-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    color: var(--navy-56);
+    transition: 120ms ease;
+}
+
+.tf-icon-btn:hover:not(:disabled) {
+    background: var(--navy-8);
+    color: var(--navy);
+}
+
+.tf-icon-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.tf-icon-btn--danger:hover:not(:disabled) {
+    background: var(--error-bg);
+    color: var(--error);
+}
+
+/* Material rows */
+.tf-material-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1px solid var(--navy-8);
+    border-radius: 12px;
+}
+
+.tf-material-row__main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.tf-material-row__title {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tf-material-row__meta {
+    font-size: 12px;
+    color: var(--navy-56);
+}
+
+.tf-inline-form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    padding: 14px;
+    border: 1px dashed var(--navy-12);
+    border-radius: 12px;
+}
+
+.tf-inline-form .tf-field {
+    flex: 1;
+    min-width: 160px;
+}
+
+/* Confirm dialog (delete course/lesson) */
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 90, 0.32);
+    backdrop-filter: blur(2px);
+}
+
+.confirm-dialog {
+    width: 100%;
+    max-width: 420px;
+    background: var(--white);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 24px 64px rgba(0, 0, 90, 0.24);
+}
+
+.confirm-dialog__title {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0 0 12px;
+}
+
+.confirm-dialog__text {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--navy-72);
+    margin: 0 0 24px;
+}
+
+.confirm-dialog__actions {
+    display: flex;
+    gap: 12px;
+}
+
+@media (max-width: 640px) {
+    .tf-grid {
+        grid-template-columns: 1fr;
+    }
+}

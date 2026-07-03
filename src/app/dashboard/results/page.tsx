@@ -2,7 +2,7 @@ import './results.css';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
-import { DashboardCourse, getStudentDashboard } from '@/lib/api/analytics';
+import { CourseResult, getMyResults } from '@/lib/api/results';
 import Icon from '@/components/UI/Icon/Icon';
 
 function pluralizeCourses(count: number): string {
@@ -14,16 +14,16 @@ function pluralizeCourses(count: number): string {
     return 'курсов';
 }
 
-function CourseRow({ course }: { course: DashboardCourse }) {
+function CourseRow({ course }: { course: CourseResult }) {
     const atRisk = course.status === 'AT_RISK';
-    const progress = Math.round(course.progress_percentage);
+    const progress = Math.round(course.progress_percent);
     const done = course.lessons_total > 0 && course.lessons_completed >= course.lessons_total;
 
     return (
         <Link href={`/course?id=${course.course_id}`} className="results-row">
             <div className="results-row__main">
                 <span className="results-row__title">
-                    {course.course_title || 'Курс удалён'}
+                    {course.title || 'Курс удалён'}
                 </span>
                 <span className="results-row__meta">
                     {course.lessons_completed} из {course.lessons_total} уроков
@@ -71,7 +71,7 @@ export default async function Page() {
         redirect('/dashboard/teacher');
     }
 
-    const result = await getStudentDashboard();
+    const result = await getMyResults();
 
     if (!result.ok) {
         return (
@@ -86,7 +86,7 @@ export default async function Page() {
         );
     }
 
-    const { overall_progress, courses_completed, courses } = result.data;
+    const { overall_progress_percent, courses_completed, courses } = result.data;
     const atRiskCount = courses.filter((c) => c.status === 'AT_RISK').length;
 
     return (
@@ -118,10 +118,10 @@ export default async function Page() {
                                 Общий прогресс
                             </span>
                             <span className="results-card__value">
-                                {Math.round(overall_progress)}%
+                                {Math.round(overall_progress_percent)}%
                             </span>
                             <span className="results-card__hint">
-                                в среднем по {courses.length}{' '}
+                                по {courses.length}{' '}
                                 {pluralizeCourses(courses.length)}
                             </span>
                         </div>

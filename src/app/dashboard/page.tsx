@@ -3,15 +3,15 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import { getMe } from '@/lib/api/profile';
-import { DashboardCourse, getStudentDashboard } from '@/lib/api/analytics';
+import { CourseResult, getMyResults } from '@/lib/api/results';
 import Icon from '@/components/UI/Icon/Icon';
 
 function firstName(fullName: string | undefined): string {
     return (fullName ?? '').trim().split(/\s+/)[0] ?? '';
 }
 
-function ContinueCard({ course }: { course: DashboardCourse }) {
-    const progress = Math.round(course.progress_percentage);
+function ContinueCard({ course }: { course: CourseResult }) {
+    const progress = Math.round(course.progress_percent);
     const atRisk = course.status === 'AT_RISK';
 
     return (
@@ -21,7 +21,7 @@ function ContinueCard({ course }: { course: DashboardCourse }) {
         >
             <div className="home-continue-card__head">
                 <span className="home-continue-card__title">
-                    {course.course_title || 'Курс удалён'}
+                    {course.title || 'Курс удалён'}
                 </span>
                 {atRisk && (
                     <span className="home-continue-card__flag">
@@ -56,10 +56,10 @@ export default async function Page() {
         redirect('/dashboard/teacher');
     }
 
-    const [me, dashboard] = await Promise.all([getMe(), getStudentDashboard()]);
+    const [me, results] = await Promise.all([getMe(), getMyResults()]);
     const name = firstName(me?.full_name);
 
-    const courses = dashboard.ok ? dashboard.data.courses : [];
+    const courses = results.ok ? results.data.courses : [];
     const inProgress = courses.filter(
         (c) => !(c.lessons_total > 0 && c.lessons_completed >= c.lessons_total),
     );
@@ -95,8 +95,8 @@ export default async function Page() {
                                 Общий прогресс
                             </span>
                             <span className="home-card__value">
-                                {dashboard.ok
-                                    ? Math.round(dashboard.data.overall_progress)
+                                {results.ok
+                                    ? Math.round(results.data.overall_progress_percent)
                                     : 0}
                                 %
                             </span>
@@ -112,8 +112,8 @@ export default async function Page() {
                         <div className="home-card home-card--ok">
                             <span className="home-card__label">Завершено</span>
                             <span className="home-card__value">
-                                {dashboard.ok
-                                    ? dashboard.data.courses_completed
+                                {results.ok
+                                    ? results.data.courses_completed
                                     : 0}
                             </span>
                         </div>

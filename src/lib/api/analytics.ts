@@ -22,26 +22,6 @@ export type DashboardResult =
     | { ok: true; data: TeacherDashboard }
     | { ok: false; message: string };
 
-export type DashboardCourse = {
-    course_id: string;
-    course_title: string;
-    progress_percentage: number;
-    lessons_completed: number;
-    lessons_total: number;
-    status: RiskStatus;
-    days_inactive?: number;
-};
-
-export type StudentDashboard = {
-    overall_progress: number;
-    courses_completed: number;
-    courses: DashboardCourse[];
-};
-
-export type StudentDashboardResult =
-    | { ok: true; data: StudentDashboard }
-    | { ok: false; message: string };
-
 function normalizeCourses(res: unknown): Course[] {
     if (!res) return [];
     if (Array.isArray(res)) return res as Course[];
@@ -126,49 +106,6 @@ export async function getTeacherDashboard(
         }
     } catch (err) {
         console.error(`[getTeacherDashboard] fetch failed for ${url}:`, err);
-        return { ok: false, message: 'Сервер недоступен. Попробуйте позже.' };
-    }
-}
-
-// getStudentDashboard loads the signed-in student's own rolled-up progress
-// across every course they are enrolled in.
-export async function getStudentDashboard(): Promise<StudentDashboardResult> {
-    const session = await auth();
-    if (!session?.accessToken) {
-        return { ok: false, message: 'Войдите в аккаунт.' };
-    }
-
-    const url = `${process.env.BACKEND_URL}/api/v1/analytics/student/me`;
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: { Authorization: `Bearer ${session.accessToken}` },
-            cache: 'no-store',
-        });
-
-        if (response.ok) {
-            return {
-                ok: true,
-                data: (await response.json()) as StudentDashboard,
-            };
-        }
-
-        switch (response.status) {
-            case 401:
-                return { ok: false, message: 'Сессия истекла. Войдите снова.' };
-            case 403:
-                return {
-                    ok: false,
-                    message: 'Доступно только студентам.',
-                };
-            default:
-                return {
-                    ok: false,
-                    message: 'Не удалось загрузить результаты.',
-                };
-        }
-    } catch (err) {
-        console.error(`[getStudentDashboard] fetch failed for ${url}:`, err);
         return { ok: false, message: 'Сервер недоступен. Попробуйте позже.' };
     }
 }

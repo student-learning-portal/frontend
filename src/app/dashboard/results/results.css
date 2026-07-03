@@ -1,0 +1,248 @@
+.results {
+    width: 100%;
+    padding: 32px 40px;
+    color: var(--navy);
+}
+
+.results__head {
+    margin-bottom: 24px;
+}
+
+.results__title {
+    font-size: 30px;
+    font-weight: 800;
+    margin: 0 0 6px;
+}
+
+.results__subtitle {
+    margin: 0;
+    color: var(--navy-56);
+    font-size: 15px;
+}
+
+.results-state {
+    padding: 28px;
+    border: 1px solid var(--navy-8);
+    border-radius: 16px;
+    color: var(--navy-56);
+    font-size: 15px;
+    text-align: center;
+}
+
+.results-state--error {
+    color: var(--error);
+    border-color: rgba(179, 38, 30, 0.24);
+    background: var(--error-bg);
+}
+
+.results-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 48px 28px;
+    border: 1px solid var(--navy-8);
+    border-radius: 16px;
+    text-align: center;
+    color: var(--navy-56);
+}
+
+.results-empty h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.results-empty p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.results-empty__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 24px;
+    border-radius: 12px;
+    background-color: var(--navy);
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 150ms ease;
+}
+
+.results-empty__link:hover {
+    filter: brightness(1.08);
+}
+
+/* KPI cards */
+.results-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.results-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 20px;
+    border: 1px solid var(--navy-12);
+    border-radius: 14px;
+}
+
+.results-card__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy-56);
+}
+
+.results-card__value {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.results-card__hint {
+    font-size: 12px;
+    color: var(--navy-56);
+}
+
+.results-card--ok {
+    border-color: rgba(26, 127, 75, 0.24);
+    background: var(--success-bg);
+}
+
+.results-card--ok .results-card__value {
+    color: var(--success);
+}
+
+.results-card--risk {
+    border-color: rgba(179, 38, 30, 0.24);
+    background: var(--error-bg);
+}
+
+.results-card--risk .results-card__value {
+    color: var(--error);
+}
+
+/* Course list */
+.results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.results-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 20px;
+    border: 1px solid var(--navy-8);
+    border-radius: 14px;
+    color: inherit;
+    transition: border-color 0.15s ease;
+}
+
+.results-row:hover {
+    border-color: var(--navy-24);
+}
+
+.results-row__main {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1.4;
+    min-width: 0;
+}
+
+.results-row__title {
+    font-weight: 700;
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.results-row__meta {
+    font-size: 13px;
+    color: var(--navy-56);
+}
+
+.results-row__progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.results-progress {
+    flex: 1;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--navy-8);
+    overflow: hidden;
+}
+
+.results-progress__bar {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--success);
+    transition: width 0.3s ease;
+}
+
+.results-progress__bar--risk {
+    background: var(--error);
+}
+
+.results-progress__value {
+    min-width: 40px;
+    text-align: right;
+    font-weight: 600;
+    color: var(--navy-72);
+}
+
+.results-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.results-badge--risk {
+    color: var(--error);
+    background: var(--error-bg);
+}
+
+.results-badge--ok {
+    color: var(--success);
+    background: var(--success-bg);
+}
+
+.results-badge--done {
+    color: var(--navy);
+    background: var(--navy-8);
+}
+
+@media (max-width: 900px) {
+    .results-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .results-row {
+        flex-wrap: wrap;
+    }
+
+    .results-row__progress {
+        width: 100%;
+    }
+}

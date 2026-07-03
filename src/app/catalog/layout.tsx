@@ -1,11 +1,9 @@
 import { ReactNode } from 'react';
 import { auth } from '@/auth';
 import AppShell from '@/components/AppShell/AppShell';
-import NavigationBar from '@/components/StudentNavigationBar/NavigationBar';
 import {
     studentNavigationLinkProps,
     teacherNavigationLinkProps,
-    catalogNavigationLinkProps,
 } from '@/constants/navigationLinks';
 import './catalogPage.css';
 
@@ -30,12 +28,6 @@ export default async function CatalogLayout({
             portalTitle={portalTitle}
             homeHref={homeHref}
         >
-            <div className="catalog-subnav">
-                <NavigationBar
-                    type="row"
-                    navigationLinkProps={catalogNavigationLinkProps}
-                ></NavigationBar>
-            </div>
             {children}
         </AppShell>
     );

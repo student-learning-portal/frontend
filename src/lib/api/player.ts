@@ -83,78 +83,7 @@ async function request<T>(
     }
 }
 
-// TEMP: уроки-заглушки (placeholder-*) не существуют на бэке — отдаём мок
-// с реальным демо-видео и PDF, чтобы посмотреть, как выглядит плеер.
-// Удалить вместе с PLACEHOLDER_LESSONS, когда появится реальный эндпоинт.
-const PLACEHOLDER_LESSON_DATA: Record<string, Partial<LessonData>> = {
-    'placeholder-1': {
-        title: 'Введение в курс',
-        lesson_type: 'video',
-        position: 1,
-        content_url:
-            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-        duration_seconds: 596,
-    },
-    'placeholder-2': {
-        title: 'Основные понятия',
-        lesson_type: 'text',
-        position: 2,
-        content_url: '',
-        duration_seconds: 0,
-    },
-    'placeholder-3': {
-        title: 'Практическое видео',
-        lesson_type: 'video',
-        position: 3,
-        content_url:
-            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-        duration_seconds: 653,
-    },
-    'placeholder-4': {
-        title: 'Проверочное задание',
-        lesson_type: 'quiz',
-        position: 4,
-        content_url: '',
-        duration_seconds: 0,
-    },
-};
-
-function isPlaceholder(lessonId: string): boolean {
-    return lessonId.startsWith('placeholder-');
-}
-
-function buildPlaceholderLesson(
-    courseId: string,
-    lessonId: string,
-): LessonData {
-    const meta = PLACEHOLDER_LESSON_DATA[lessonId] ?? {};
-    return {
-        lesson_id: lessonId,
-        course_id: courseId,
-        title: meta.title ?? 'Урок',
-        lesson_type: meta.lesson_type ?? 'text',
-        position: meta.position ?? 0,
-        content_url: meta.content_url ?? '',
-        duration_seconds: meta.duration_seconds ?? 0,
-        materials: [
-            {
-                title: 'Материалы урока (демо PDF)',
-                url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-                type: 'pdf',
-            },
-        ],
-        last_progress_seconds: 0,
-        percent_complete: 0,
-    };
-}
-
 export async function getLesson(courseId: string, lessonId: string) {
-    if (isPlaceholder(lessonId)) {
-        return {
-            ok: true as const,
-            data: buildPlaceholderLesson(courseId, lessonId),
-        };
-    }
     return request<LessonData>(
         `/api/v1/player/courses/${courseId}/lessons/${lessonId}`,
     );
@@ -172,18 +101,6 @@ export async function saveProgress(
     progressSeconds: number,
     completed = false,
 ) {
-    if (isPlaceholder(lessonId)) {
-        return {
-            ok: true as const,
-            data: {
-                lesson_id: lessonId,
-                progress_seconds: Math.max(0, Math.floor(progressSeconds)),
-                percent_complete: completed ? 100 : 0,
-                completed,
-                updated_at: new Date().toISOString(),
-            } satisfies LessonProgress,
-        };
-    }
     return request<LessonProgress>(
         `/api/v1/player/courses/${courseId}/lessons/${lessonId}/progress`,
         {
@@ -198,99 +115,13 @@ export async function saveProgress(
 
 type RawLesson = Partial<LessonSummary> & { id?: string };
 
-// TEMP: бэкенд ещё не отдаёт список уроков курса
-// (нужен GET /catalog/courses/{id}/lessons). Пока эндпоинта нет —
-// возвращаем уроки из сид-данных, чтобы можно было открыть плеер и проверить.
-// Удалить этот блок, когда появится реальный эндпоинт.
-const SEED_LESSONS: Record<string, LessonSummary[]> = {
-    'aaaaaaa1-0000-0000-0000-000000000001': [
-        {
-            lesson_id: 'c0000001-0000-0000-0000-000000000001',
-            title: 'Установка и первый скрипт',
-            lesson_type: 'video',
-            position: 1,
-        },
-        {
-            lesson_id: 'c0000001-0000-0000-0000-000000000002',
-            title: 'Переменные и типы данных',
-            lesson_type: 'text',
-            position: 2,
-        },
-        {
-            lesson_id: 'c0000001-0000-0000-0000-000000000003',
-            title: 'Проверочный тест',
-            lesson_type: 'quiz',
-            position: 3,
-        },
-    ],
-    'aaaaaaa2-0000-0000-0000-000000000002': [
-        {
-            lesson_id: 'c0000002-0000-0000-0000-000000000001',
-            title: 'Что такое компонент',
-            lesson_type: 'video',
-            position: 1,
-        },
-        {
-            lesson_id: 'c0000002-0000-0000-0000-000000000002',
-            title: 'Хуки useState/useEffect',
-            lesson_type: 'video',
-            position: 2,
-        },
-    ],
-    'bbbbbbb1-0000-0000-0000-000000000003': [
-        {
-            lesson_id: 'c0000003-0000-0000-0000-000000000001',
-            title: 'Производные',
-            lesson_type: 'video',
-            position: 1,
-        },
-        {
-            lesson_id: 'c0000003-0000-0000-0000-000000000002',
-            title: 'Тренировочный вариант',
-            lesson_type: 'quiz',
-            position: 2,
-        },
-    ],
-};
-
-// TEMP: для курсов без сид-уроков показываем заглушки, чтобы можно было
-// посмотреть, как выглядит страница уроков. Удалить вместе с SEED_LESSONS,
-// когда появится реальный эндпоинт.
-const PLACEHOLDER_LESSONS: LessonSummary[] = [
-    {
-        lesson_id: 'placeholder-1',
-        title: 'Введение в курс',
-        lesson_type: 'video',
-        position: 1,
-    },
-    {
-        lesson_id: 'placeholder-2',
-        title: 'Основные понятия',
-        lesson_type: 'text',
-        position: 2,
-    },
-    {
-        lesson_id: 'placeholder-3',
-        title: 'Практическое видео',
-        lesson_type: 'video',
-        position: 3,
-    },
-    {
-        lesson_id: 'placeholder-4',
-        title: 'Проверочное задание',
-        lesson_type: 'quiz',
-        position: 4,
-    },
-];
-
-export async function getCourseLessons(courseId: string) {
+export async function getCourseLessons(
+    courseId: string,
+): Promise<PlayerResult<LessonSummary[]>> {
     const res = await request<RawLesson[]>(
         `/api/v1/catalog/courses/${courseId}/lessons`,
     );
-    if (!res.ok) {
-        const seed = SEED_LESSONS[courseId];
-        return { ok: true as const, data: seed ?? PLACEHOLDER_LESSONS };
-    }
+    if (!res.ok) return res;
 
     const list = Array.isArray(res.data) ? res.data : [];
     const lessons: LessonSummary[] = list
@@ -304,5 +135,5 @@ export async function getCourseLessons(courseId: string) {
         .filter((l) => l.lesson_id)
         .sort((a, b) => a.position - b.position);
 
-    return { ok: true as const, data: lessons };
+    return { ok: true, data: lessons };
 }

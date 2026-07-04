@@ -1,41 +1,51 @@
-import './my-courses.css';
+import './myCourses.css';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import { getMyCourses } from '@/lib/api/courses';
-import CourseList from '@/components/CoursesList/CoursesList';
+import CourseCard from '@/components/CourseCard/CourseCard';
+
+function pluralizeCourses(count: number): string {
+    const mod10 = count % 10;
+    const mod100 = count % 100;
+    if (mod10 === 1 && mod100 !== 11) return 'курс';
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20))
+        return 'курса';
+    return 'курсов';
+}
 
 export default async function Page() {
     const session = await auth();
-    const isTeacher = session?.user?.role === 'teacher';
+    if (session?.user?.role === 'teacher') {
+        redirect('/dashboard/teacher');
+    }
+
     const courses = await getMyCourses();
-    const ownedCourseIds = new Set(courses.map((c) => c.id));
 
     return (
         <div className="my-courses">
-            <div className="my-courses__head">
+            <header className="my-courses__head">
                 <h1 className="my-courses__title">Мои курсы</h1>
                 <p className="my-courses__subtitle">
-                    {isTeacher
-                        ? 'Курсы, которые вы ведёте.'
-                        : 'Курсы, которые вы приобрели.'}
+                    {courses.length > 0
+                        ? `${courses.length} ${pluralizeCourses(courses.length)}`
+                        : 'Здесь появятся купленные курсы'}
                 </p>
-            </div>
+            </header>
 
-            {courses.length === 0 ? (
-                <div className="my-courses__empty">
-                    <p className="my-courses__empty-text">
-                        {isTeacher
-                            ? 'Вы пока не создали ни одного курса.'
-                            : 'Вы пока не купили ни одного курса.'}
-                    </p>
-                    {!isTeacher && (
-                        <Link href="/catalog" className="my-courses__empty-link">
-                            Перейти в каталог
-                        </Link>
-                    )}
+            {courses.length > 0 ? (
+                <div className="my-courses__grid">
+                    {courses.map((course) => (
+                        <CourseCard key={course.id} course={course} />
+                    ))}
                 </div>
             ) : (
-                <CourseList courses={courses} ownedCourseIds={ownedCourseIds} />
+                <div className="my-courses__empty">
+                    <p>Вы ещё не приобрели ни одного курса.</p>
+                    <Link href="/catalog" className="my-courses__cta">
+                        Перейти в каталог
+                    </Link>
+                </div>
             )}
         </div>
     );

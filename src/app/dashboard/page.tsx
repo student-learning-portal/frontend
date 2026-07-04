@@ -96,7 +96,9 @@ export default async function Page() {
                             </span>
                             <span className="home-card__value">
                                 {results.ok
-                                    ? Math.round(results.data.overall_progress_percent)
+                                    ? Math.round(
+                                          results.data.overall_progress_percent,
+                                      )
                                     : 0}
                                 %
                             </span>
@@ -140,7 +142,10 @@ export default async function Page() {
                         ) : (
                             <div className="home-continue-list">
                                 {inProgress.slice(0, 3).map((c) => (
-                                    <ContinueCard key={c.course_id} course={c} />
+                                    <ContinueCard
+                                        key={c.course_id}
+                                        course={c}
+                                    />
                                 ))}
                             </div>
                         )}

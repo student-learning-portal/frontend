@@ -2,19 +2,14 @@ import { StudentNavigationLinkProps } from '@/types/navigationLinkProps';
 
 export const studentNavigationLinkProps: StudentNavigationLinkProps[] = [
     {
-        title: 'Главная',
-        href: '/dashboard',
-        iconName: 'home',
+        title: 'Мои курсы',
+        href: '/dashboard/my-courses',
+        iconName: 'book',
     },
     {
         title: 'Каталог',
         href: '/catalog',
         iconName: 'search',
-    },
-    {
-        title: 'Мои курсы',
-        href: '/dashboard/my-courses',
-        iconName: 'book',
     },
     {
         title: 'Результаты',

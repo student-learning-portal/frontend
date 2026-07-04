@@ -84,7 +84,11 @@ function LessonEditRow({
                 >
                     {saving ? 'Сохранение…' : 'Сохранить'}
                 </Button>
-                <Button variant="secondary" disabled={saving} onClick={onCancel}>
+                <Button
+                    variant="secondary"
+                    disabled={saving}
+                    onClick={onCancel}
+                >
                     Отмена
                 </Button>
             </div>
@@ -117,7 +121,9 @@ export default function CourseEditor({
     const [newLessonType, setNewLessonType] = useState<LessonType>('video');
     const [editingId, setEditingId] = useState<string | null>(null);
     const [confirmDelete, setConfirmDelete] = useState<
-        null | { kind: 'course' } | { kind: 'lesson'; id: string; title: string }
+        | null
+        | { kind: 'course' }
+        | { kind: 'lesson'; id: string; title: string }
     >(null);
 
     function handleSaveCourse(e: React.FormEvent) {
@@ -419,10 +425,7 @@ export default function CourseEditor({
                                             onClick={() => handleMove(idx, -1)}
                                             aria-label="Переместить выше"
                                         >
-                                            <Icon
-                                                name="chevronUp"
-                                                size={16}
-                                            />
+                                            <Icon name="chevronUp" size={16} />
                                         </button>
                                         <button
                                             type="button"
@@ -493,9 +496,7 @@ export default function CourseEditor({
                         <input
                             className="tf-input"
                             value={newLessonTitle}
-                            onChange={(e) =>
-                                setNewLessonTitle(e.target.value)
-                            }
+                            onChange={(e) => setNewLessonTitle(e.target.value)}
                             placeholder="Название урока"
                         />
                     </label>
@@ -504,9 +505,7 @@ export default function CourseEditor({
                         <Select
                             selectValues={TYPE_OPTIONS}
                             value={newLessonType}
-                            onChange={(v) =>
-                                setNewLessonType(v as LessonType)
-                            }
+                            onChange={(v) => setNewLessonType(v as LessonType)}
                         />
                     </label>
                     <div className="tf-actions">
@@ -542,8 +541,8 @@ export default function CourseEditor({
                                 </>
                             ) : (
                                 <>
-                                    Урок «{confirmDelete.title}» и его
-                                    материалы будут удалены безвозвратно.
+                                    Урок «{confirmDelete.title}» и его материалы
+                                    будут удалены безвозвратно.
                                 </>
                             )}
                         </p>

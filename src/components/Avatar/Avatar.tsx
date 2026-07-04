@@ -97,16 +97,6 @@ export default function Avatar({ name, role }: Props) {
                         Настройки
                     </Link>
 
-                    <button
-                        type="button"
-                        className="avatar-menu__item"
-                        role="menuitem"
-                        onClick={() => setOpen(false)}
-                    >
-                        <Icon name="refresh" size={18} />
-                        Сменить роль
-                    </button>
-
                     <div className="avatar-menu__divider" />
 
                     <form action={logout}>

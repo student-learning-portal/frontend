@@ -7,6 +7,7 @@ import { useEffect, useState, useTransition } from 'react';
 import { Course } from '@/models/Course';
 import { getCourseById, getMyCourses } from '@/lib/api/courses';
 import { checkout, refund } from '@/lib/api/purchase';
+import { getTeacher, Teacher } from '@/lib/api/teachers';
 import Button from '@/components/UI/Button/Button';
 import Icon from '@/components/UI/Icon/Icon';
 import { emitCoinBalanceUpdate } from '@/components/CoinBalance/coinBalanceEvents';
@@ -14,6 +15,11 @@ import { emitCoinBalanceUpdate } from '@/components/CoinBalance/coinBalanceEvent
 function formatMoney(amount: number, _currency?: string): string {
     void _currency;
     return `${amount.toLocaleString('ru-RU')} 🪙`;
+}
+
+function getInitials(name: string): string {
+    const parts = name.trim().split(/\s+/);
+    return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || 'ПР';
 }
 
 export default function CourseDetail() {
@@ -32,6 +38,7 @@ export default function CourseDetail() {
     } | null>(null);
 
     const [confirming, setConfirming] = useState<null | 'buy' | 'refund'>(null);
+    const [teacher, setTeacher] = useState<Teacher | null>(null);
 
     const [isPending, startTransition] = useTransition();
 
@@ -47,6 +54,12 @@ export default function CourseDetail() {
             setNotFound(!data);
             setOwned(myCourses.some((c) => c.id === id));
             setLoading(false);
+
+            if (data?.teacher_id) {
+                const t = await getTeacher(data.teacher_id);
+                if (!active) return;
+                setTeacher(t);
+            }
         })();
         return () => {
             active = false;
@@ -157,13 +170,15 @@ export default function CourseDetail() {
                     )}
 
                     <div className="course-teacher">
-                        <span className="course-teacher__avatar">ПР</span>
+                        <span className="course-teacher__avatar">
+                            {teacher ? getInitials(teacher.full_name) : 'ПР'}
+                        </span>
                         <span className="course-teacher__meta">
                             <span className="course-teacher__name">
-                                Преподаватель
+                                {teacher?.full_name ?? 'Преподаватель'}
                             </span>
                             <span className="course-teacher__hint">
-                                Информация появится позже
+                                {teacher ? 'Преподаватель курса' : 'Загрузка…'}
                             </span>
                         </span>
                     </div>

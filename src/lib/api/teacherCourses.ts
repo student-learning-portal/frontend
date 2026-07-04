@@ -68,7 +68,9 @@ async function request<T>(
         }
 
         const text = await response.text();
-        console.error(`[teacherCourses] ${response.status} ${method} ${url} :: ${text}`);
+        console.error(
+            `[teacherCourses] ${response.status} ${method} ${url} :: ${text}`,
+        );
 
         switch (response.status) {
             case 400:

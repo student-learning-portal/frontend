@@ -33,7 +33,9 @@ export default function LessonContentEditor({
     const [notice, setNotice] = useState<Notice | null>(null);
 
     const [mediaUrl, setMediaUrl] = useState(lesson.content_url);
-    const [duration, setDuration] = useState(String(lesson.duration_seconds || 0));
+    const [duration, setDuration] = useState(
+        String(lesson.duration_seconds || 0),
+    );
     const [mediaType, setMediaType] = useState<string>(
         lesson.media_type ?? 'video',
     );
@@ -132,9 +134,7 @@ export default function LessonContentEditor({
                 materialId,
             );
             if (res.ok) {
-                setMaterials((prev) =>
-                    prev.filter((m) => m.id !== materialId),
-                );
+                setMaterials((prev) => prev.filter((m) => m.id !== materialId));
             } else {
                 setNotice({ type: 'error', text: res.message });
             }
@@ -280,9 +280,7 @@ export default function LessonContentEditor({
                         <input
                             className="tf-input"
                             value={materialTitle}
-                            onChange={(e) =>
-                                setMaterialTitle(e.target.value)
-                            }
+                            onChange={(e) => setMaterialTitle(e.target.value)}
                             placeholder="Конспект урока"
                         />
                     </label>
@@ -300,9 +298,7 @@ export default function LessonContentEditor({
                         <input
                             className="tf-input"
                             value={materialType}
-                            onChange={(e) =>
-                                setMaterialType(e.target.value)
-                            }
+                            onChange={(e) => setMaterialType(e.target.value)}
                             placeholder="pdf"
                         />
                     </label>

@@ -17,7 +17,9 @@ function pluralizeCourses(count: number): string {
 function CourseRow({ course }: { course: CourseResult }) {
     const atRisk = course.status === 'AT_RISK';
     const progress = Math.round(course.progress_percent);
-    const done = course.lessons_total > 0 && course.lessons_completed >= course.lessons_total;
+    const done =
+        course.lessons_total > 0 &&
+        course.lessons_completed >= course.lessons_total;
 
     return (
         <Link href={`/course?id=${course.course_id}`} className="results-row">
@@ -86,7 +88,8 @@ export default async function Page() {
         );
     }
 
-    const { overall_progress_percent, courses_completed, courses } = result.data;
+    const { overall_progress_percent, courses_completed, courses } =
+        result.data;
     const atRiskCount = courses.filter((c) => c.status === 'AT_RISK').length;
 
     return (

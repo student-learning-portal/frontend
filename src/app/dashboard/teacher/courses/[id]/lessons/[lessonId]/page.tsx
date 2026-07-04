@@ -25,10 +25,7 @@ export default async function Page({
     if (!course) {
         return (
             <div className="tf-page">
-                <Link
-                    href="/dashboard/teacher/courses"
-                    className="tf-back"
-                >
+                <Link href="/dashboard/teacher/courses" className="tf-back">
                     <Icon name="arrowLeft" size={16} />К курсам
                 </Link>
                 <div className="tf-empty">

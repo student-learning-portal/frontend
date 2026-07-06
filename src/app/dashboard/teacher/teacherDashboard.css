@@ -227,8 +227,20 @@
 
 .td-row__progress {
     display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.td-progress__track {
+    display: flex;
     align-items: center;
     gap: 12px;
+}
+
+.td-progress__lessons {
+    font-size: 12px;
+    color: var(--text-secondery);
 }
 
 .td-progress {
@@ -279,6 +291,12 @@
 
 .td-row__inactive {
     color: var(--navy-56);
+}
+
+/* A learner who has never opened the course — the strongest at-risk signal. */
+.td-row__never {
+    color: var(--error);
+    font-weight: 600;
 }
 
 /* States */

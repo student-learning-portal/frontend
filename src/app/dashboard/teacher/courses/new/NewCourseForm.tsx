@@ -16,7 +16,6 @@ export default function NewCourseForm() {
     const [description, setDescription] = useState('');
     const [subject, setSubject] = useState('');
     const [price, setPrice] = useState('0');
-    const [currency, setCurrency] = useState('USD');
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -38,7 +37,7 @@ export default function NewCourseForm() {
                 description: description.trim(),
                 subject: subject.trim(),
                 price: parsedPrice,
-                currency: currency.trim(),
+                currency: 'COIN',
             });
             if (res.ok) {
                 router.push(`/dashboard/teacher/courses/${res.data.id}`);
@@ -101,27 +100,17 @@ export default function NewCourseForm() {
                             />
                         </label>
                         <label className="tf-field">
-                            <span className="tf-label">Валюта</span>
+                            <span className="tf-label">Цена, 🪙</span>
                             <input
                                 className="tf-input"
-                                value={currency}
-                                onChange={(e) => setCurrency(e.target.value)}
-                                placeholder="USD"
+                                type="number"
+                                min={0}
+                                step="0.01"
+                                value={price}
+                                onChange={(e) => setPrice(e.target.value)}
                             />
                         </label>
                     </div>
-
-                    <label className="tf-field">
-                        <span className="tf-label">Цена</span>
-                        <input
-                            className="tf-input"
-                            type="number"
-                            min={0}
-                            step="0.01"
-                            value={price}
-                            onChange={(e) => setPrice(e.target.value)}
-                        />
-                    </label>
 
                     <div className="tf-actions">
                         <Button type="submit" disabled={isPending}>

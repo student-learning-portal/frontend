@@ -111,7 +111,6 @@ export default function CourseEditor({
     const [description, setDescription] = useState(course.description ?? '');
     const [subject, setSubject] = useState(course.subject);
     const [price, setPrice] = useState(String(course.price));
-    const [currency, setCurrency] = useState(course.currency ?? 'USD');
     const [status, setStatus] = useState<string>(course.status ?? 'draft');
 
     const [lessons, setLessons] = useState(
@@ -149,7 +148,7 @@ export default function CourseEditor({
                 description: description.trim(),
                 subject: subject.trim(),
                 price: parsedPrice,
-                currency: currency.trim(),
+                currency: 'COIN',
                 status: status as 'draft' | 'published' | 'archived',
             });
             if (res.ok) {
@@ -323,18 +322,7 @@ export default function CourseEditor({
                             />
                         </label>
                         <label className="tf-field">
-                            <span className="tf-label">Валюта</span>
-                            <input
-                                className="tf-input"
-                                value={currency}
-                                onChange={(e) => setCurrency(e.target.value)}
-                            />
-                        </label>
-                    </div>
-
-                    <div className="tf-grid">
-                        <label className="tf-field">
-                            <span className="tf-label">Цена</span>
+                            <span className="tf-label">Цена, 🪙</span>
                             <input
                                 className="tf-input"
                                 type="number"
@@ -344,15 +332,16 @@ export default function CourseEditor({
                                 onChange={(e) => setPrice(e.target.value)}
                             />
                         </label>
-                        <label className="tf-field">
-                            <span className="tf-label">Статус</span>
-                            <Select
-                                selectValues={STATUS_OPTIONS}
-                                value={status}
-                                onChange={setStatus}
-                            />
-                        </label>
                     </div>
+
+                    <label className="tf-field">
+                        <span className="tf-label">Статус</span>
+                        <Select
+                            selectValues={STATUS_OPTIONS}
+                            value={status}
+                            onChange={setStatus}
+                        />
+                    </label>
 
                     <div className="tf-actions">
                         <Button type="submit" disabled={isPending}>

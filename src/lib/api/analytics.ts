@@ -10,7 +10,12 @@ export type DashboardStudent = {
     full_name?: string;
     progress_percentage: number;
     status: RiskStatus;
+    lessons_completed?: number;
+    lessons_total?: number;
     days_inactive?: number;
+    // ISO 8601 timestamp of the last recorded activity. Absent when the learner
+    // is enrolled but has never started the course.
+    last_activity?: string;
 };
 
 export type TeacherDashboard = {

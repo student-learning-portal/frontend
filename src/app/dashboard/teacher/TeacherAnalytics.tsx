@@ -33,6 +33,35 @@ function pluralizeDays(count: number): string {
     return 'дней';
 }
 
+function pluralizeLessons(count: number): string {
+    const mod10 = count % 10;
+    const mod100 = count % 100;
+    if (mod10 === 1 && mod100 !== 11) return 'урок';
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20))
+        return 'урока';
+    return 'уроков';
+}
+
+const lastActiveFormatter = new Intl.DateTimeFormat('ru-RU', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+});
+
+function formatLastActive(iso: string): string {
+    const date = new Date(iso);
+    return Number.isNaN(date.getTime()) ? '' : lastActiveFormatter.format(date);
+}
+
+// inactivityRank orders learners from most to least active for the "Неактивен"
+// column. A learner who has never started (no last_activity) is treated as
+// maximally inactive so they surface at the top regardless of their
+// days_inactive, which the backend reports as 0 for never-active learners.
+function inactivityRank(s: DashboardStudent): number {
+    if (!s.last_activity) return Number.POSITIVE_INFINITY;
+    return s.days_inactive ?? 0;
+}
+
 function initials(name: string | undefined, fallback: string): string {
     const source = (name ?? '').trim();
     if (!source) return fallback.slice(0, 2).toUpperCase();
@@ -66,8 +95,13 @@ function compareBy(
                 (a.status === 'AT_RISK' ? 0 : 1) -
                 (b.status === 'AT_RISK' ? 0 : 1)
             );
-        case 'inactive':
-            return (a.days_inactive ?? 0) - (b.days_inactive ?? 0);
+        case 'inactive': {
+            // Compare ranks directly rather than subtracting: two never-started
+            // learners both rank Infinity, and Infinity - Infinity is NaN.
+            const ra = inactivityRank(a);
+            const rb = inactivityRank(b);
+            return ra === rb ? 0 : ra < rb ? -1 : 1;
+        }
     }
 }
 
@@ -108,6 +142,9 @@ function StudentRow({ student }: { student: DashboardStudent }) {
     const atRisk = student.status === 'AT_RISK';
     const progress = Math.round(student.progress_percentage);
     const days = student.days_inactive ?? 0;
+    const lessonsTotal = student.lessons_total ?? 0;
+    const lessonsCompleted = student.lessons_completed ?? 0;
+    const started = Boolean(student.last_activity);
 
     return (
         <div className="td-row">
@@ -118,18 +155,26 @@ function StudentRow({ student }: { student: DashboardStudent }) {
                 <span className="td-row__name">{studentName(student)}</span>
             </div>
             <div className="td-row__progress">
-                <div className="td-progress">
-                    <div
-                        className={
-                            'td-progress__bar' +
-                            (atRisk ? ' td-progress__bar--risk' : '')
-                        }
-                        style={{
-                            width: `${Math.min(100, Math.max(0, progress))}%`,
-                        }}
-                    />
+                <div className="td-progress__track">
+                    <div className="td-progress">
+                        <div
+                            className={
+                                'td-progress__bar' +
+                                (atRisk ? ' td-progress__bar--risk' : '')
+                            }
+                            style={{
+                                width: `${Math.min(100, Math.max(0, progress))}%`,
+                            }}
+                        />
+                    </div>
+                    <span className="td-progress__value">{progress}%</span>
                 </div>
-                <span className="td-progress__value">{progress}%</span>
+                {lessonsTotal > 0 && (
+                    <span className="td-progress__lessons">
+                        {lessonsCompleted} из {lessonsTotal}{' '}
+                        {pluralizeLessons(lessonsTotal)}
+                    </span>
+                )}
             </div>
             <div className="td-row__status">
                 <span
@@ -143,7 +188,19 @@ function StudentRow({ student }: { student: DashboardStudent }) {
                 </span>
             </div>
             <div className="td-row__inactive">
-                {days > 0 ? `${days} ${pluralizeDays(days)}` : '—'}
+                {!started ? (
+                    <span className="td-row__never">Не начинал(а)</span>
+                ) : (
+                    <span
+                        title={
+                            student.last_activity
+                                ? `Последняя активность: ${formatLastActive(student.last_activity)}`
+                                : undefined
+                        }
+                    >
+                        {days > 0 ? `${days} ${pluralizeDays(days)}` : 'Сегодня'}
+                    </span>
+                )}
             </div>
         </div>
     );

@@ -65,7 +65,9 @@ export default function NewCourseForm() {
             </header>
 
             <section className="tf-card">
-                {error && <div className="tf-notice tf-notice--error">{error}</div>}
+                {error && (
+                    <div className="tf-notice tf-notice--error">{error}</div>
+                )}
 
                 <form className="tf-form" onSubmit={handleSubmit}>
                     <label className="tf-field">

@@ -73,6 +73,8 @@ async function postJson<T>(
         const text = await response.text();
         console.error(`[purchase] ${response.status} ${url} :: ${text}`);
 
+        // Maps the backend's HTTP status back to a typed PurchaseErrorCode so
+        // callers can branch on `code` instead of parsing status/text themselves.
         switch (response.status) {
             case 401:
                 return {

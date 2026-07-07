@@ -91,6 +91,9 @@ export default function LessonViewer() {
     function handleLoadedMetadata() {
         const el = mediaRef.current;
         if (!el || resumedRef.current || !data) return;
+        // loadedmetadata can fire more than once (e.g. source changes); the ref
+        // guard makes the resume-seek a one-time effect instead of re-seeking
+        // and undoing playback progress the user has already made.
         resumedRef.current = true;
         const resume = data.last_progress_seconds;
         if (resume > 0 && resume < el.duration) {

@@ -32,6 +32,35 @@
     flex-wrap: wrap;
 }
 
+.tf-head__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.tf-chat-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--navy-12, rgba(0, 0, 0, 0.12));
+    background: var(--white, #fff);
+    color: var(--navy, #1a2233);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+        background 0.12s ease,
+        border-color 0.12s ease;
+}
+
+.tf-chat-link:hover {
+    background: var(--navy-4, #eef0f4);
+    border-color: var(--primary, #3b5bdb);
+}
+
 .tf-title {
     font-size: 24px;
     font-weight: 700;

@@ -14,6 +14,7 @@ import Icon from '@/components/UI/Icon/Icon';
 import { emitCoinBalanceUpdate } from '@/components/CoinBalance/coinBalanceEvents';
 import { useToast } from '@/components/Toast/ToastProvider';
 import StarRating from '@/components/StarRating/StarRating';
+import CourseChat from '@/components/Chat/CourseChat';
 import {
     getCourseRatingSummary,
     getMyCourseRating,
@@ -69,7 +70,9 @@ export default function CourseDetail() {
     const [confirming, setConfirming] = useState<null | 'buy' | 'refund'>(null);
     const [teacher, setTeacher] = useState<Teacher | null>(null);
 
-    const [courseRating, setCourseRating] = useState<RatingSummary | null>(null);
+    const [courseRating, setCourseRating] = useState<RatingSummary | null>(
+        null,
+    );
     const [myCourseScore, setMyCourseScore] = useState<number | null>(null);
     const [teacherRating, setTeacherRating] = useState<RatingSummary | null>(
         null,
@@ -348,6 +351,18 @@ export default function CourseDetail() {
                                 </div>
                             )}
                         </div>
+                    )}
+
+                    {!isTeacher && owned && session?.user?.id && (
+                        <section className="course-chat-section">
+                            <h2 className="course-content__title">
+                                Чат с преподавателем
+                            </h2>
+                            <CourseChat
+                                courseId={course.id}
+                                myId={session.user.id}
+                            />
+                        </section>
                     )}
 
                     <section className="course-content">

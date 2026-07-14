@@ -1,0 +1,136 @@
+.tchat-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px 16px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.tchat-head {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.tchat-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy, #1a2233);
+    margin: 0;
+}
+
+.tchat-subtitle {
+    font-size: 14px;
+    color: var(--navy-56, #6b7280);
+    margin: 0;
+}
+
+.tchat-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 16px;
+    min-height: 480px;
+}
+
+.tchat-threads {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border: 1px solid var(--navy-8, rgba(0, 0, 0, 0.08));
+    border-radius: 12px;
+    padding: 8px;
+    overflow-y: auto;
+    max-height: 520px;
+}
+
+.tchat-threads__state {
+    margin: auto;
+    padding: 24px 12px;
+    color: var(--navy-56, #6b7280);
+    font-size: 14px;
+    text-align: center;
+}
+
+.tchat-thread {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: none;
+    background: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    transition: background 0.12s ease;
+}
+
+.tchat-thread:hover {
+    background: var(--navy-4, #eef0f4);
+}
+
+.tchat-thread--active {
+    background: var(--navy-8, #e4e7ee);
+}
+
+.tchat-thread__avatar {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--primary, #3b5bdb);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.tchat-thread__meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.tchat-thread__name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy, #1a2233);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tchat-thread__last {
+    font-size: 12px;
+    color: var(--navy-56, #6b7280);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.tchat-conversation {
+    display: flex;
+    min-height: 480px;
+}
+
+.tchat-conversation .chat-box {
+    flex: 1;
+}
+
+.tchat-empty {
+    margin: auto;
+    color: var(--navy-56, #6b7280);
+    font-size: 14px;
+    text-align: center;
+    padding: 40px;
+}
+
+@media (max-width: 720px) {
+    .tchat-layout {
+        grid-template-columns: 1fr;
+    }
+}

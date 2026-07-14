@@ -6,6 +6,14 @@ import { useEffect, useState } from 'react';
 import { Course } from '@/models/Course';
 import Icon from '@/components/UI/Icon/Icon';
 import { getCourseRatingSummary } from '@/lib/api/ratings';
+import { getTeacher } from '@/lib/api/teachers';
+
+function initials(name: string): string {
+    const parts = name.trim().split(/\s+/);
+    return (
+        ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || 'ПР'
+    );
+}
 
 const LEVELS = ['Начальный', 'Средний', 'Продвинутый'];
 
@@ -36,6 +44,7 @@ export default function CourseCard({ course, owned = false }: Props) {
         average: number;
         count: number;
     } | null>(null);
+    const [teacherName, setTeacherName] = useState<string | null>(null);
 
     useEffect(() => {
         let active = true;
@@ -48,6 +57,18 @@ export default function CourseCard({ course, owned = false }: Props) {
             active = false;
         };
     }, [course.id]);
+
+    useEffect(() => {
+        if (!course.teacher_id) return;
+        let active = true;
+        (async () => {
+            const t = await getTeacher(course.teacher_id);
+            if (active && t) setTeacherName(t.full_name);
+        })();
+        return () => {
+            active = false;
+        };
+    }, [course.teacher_id]);
 
     return (
         <Link href={`/course?id=${course.id}`} className="course-card">
@@ -70,9 +91,11 @@ export default function CourseCard({ course, owned = false }: Props) {
                 <h3 className="course-card__title">{course.title}</h3>
 
                 <div className="course-card__teacher">
-                    <span className="course-card__avatar">ПР</span>
+                    <span className="course-card__avatar">
+                        {teacherName ? initials(teacherName) : 'ПР'}
+                    </span>
                     <span className="course-card__teacher-name">
-                        Преподаватель
+                        {teacherName ?? 'Преподаватель'}
                     </span>
                 </div>
 

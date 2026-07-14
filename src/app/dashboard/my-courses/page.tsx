@@ -36,7 +36,7 @@ export default async function Page() {
             {courses.length > 0 ? (
                 <div className="my-courses__grid">
                     {courses.map((course) => (
-                        <CourseCard key={course.id} course={course} />
+                        <CourseCard key={course.id} course={course} owned />
                     ))}
                 </div>
             ) : (

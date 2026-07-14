@@ -38,6 +38,25 @@ export type TeacherMaterial = {
     type: string;
 };
 
+function errorMessageForStatus(status: number): string {
+    switch (status) {
+        case 400:
+            return 'Проверьте корректность введённых данных.';
+        case 401:
+            return 'Сессия истекла. Войдите снова.';
+        case 403:
+            return 'Недостаточно прав для этого действия.';
+        case 404:
+            return 'Курс или урок не найден.';
+        case 409:
+            return 'Опубликованный курс нельзя удалить — переведите его в архив.';
+        case 415:
+            return 'Неподдерживаемый формат файла.';
+        default:
+            return 'Не удалось выполнить действие. Попробуйте позже.';
+    }
+}
+
 async function request<T>(
     method: string,
     path: string,
@@ -71,34 +90,41 @@ async function request<T>(
         console.error(
             `[teacherCourses] ${response.status} ${method} ${url} :: ${text}`,
         );
+        return { ok: false, message: errorMessageForStatus(response.status) };
+    } catch (err) {
+        console.error(`[teacherCourses] fetch failed for ${url}:`, err);
+        return { ok: false, message: 'Сервер недоступен. Попробуйте позже.' };
+    }
+}
 
-        switch (response.status) {
-            case 400:
-                return {
-                    ok: false,
-                    message: 'Проверьте корректность введённых данных.',
-                };
-            case 401:
-                return { ok: false, message: 'Сессия истекла. Войдите снова.' };
-            case 403:
-                return {
-                    ok: false,
-                    message: 'Недостаточно прав для этого действия.',
-                };
-            case 404:
-                return { ok: false, message: 'Курс или урок не найден.' };
-            case 409:
-                return {
-                    ok: false,
-                    message:
-                        'Опубликованный курс нельзя удалить — переведите его в архив.',
-                };
-            default:
-                return {
-                    ok: false,
-                    message: 'Не удалось выполнить действие. Попробуйте позже.',
-                };
+// requestFormData is request's multipart/form-data counterpart, used for
+// file uploads — the browser sets the correct Content-Type (with boundary)
+// automatically when the body is a FormData, so we must not set it ourselves.
+async function requestFormData<T>(
+    path: string,
+    formData: FormData,
+): Promise<TeacherCourseResult<T>> {
+    const session = await auth();
+    if (!session?.accessToken) {
+        return { ok: false, message: 'Сессия истекла. Войдите снова.' };
+    }
+
+    const url = `${process.env.BACKEND_URL}${path}`;
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${session.accessToken}` },
+            body: formData,
+            cache: 'no-store',
+        });
+
+        if (response.ok) {
+            return { ok: true, data: (await response.json()) as T };
         }
+
+        const text = await response.text();
+        console.error(`[teacherCourses] ${response.status} POST ${url} :: ${text}`);
+        return { ok: false, message: errorMessageForStatus(response.status) };
     } catch (err) {
         console.error(`[teacherCourses] fetch failed for ${url}:`, err);
         return { ok: false, message: 'Сервер недоступен. Попробуйте позже.' };
@@ -207,5 +233,44 @@ export async function deleteMaterial(
     return request<void>(
         'DELETE',
         `/api/v1/teacher/courses/${courseId}/lessons/${lessonId}/materials/${materialId}`,
+    );
+}
+
+// uploadLessonMedia sends a video/audio file directly, as an alternative to
+// setLessonMedia's URL-based flow. durationSeconds is read client-side from
+// the browser's own media metadata before calling this (see
+// LessonContentEditor), since the backend doesn't probe media files.
+export async function uploadLessonMedia(
+    courseId: string,
+    lessonId: string,
+    file: File,
+    durationSeconds: number,
+) {
+    const formData = new FormData();
+    formData.set('file', file);
+    formData.set('duration_seconds', String(durationSeconds));
+    return requestFormData<TeacherMedia>(
+        `/api/v1/teacher/courses/${courseId}/lessons/${lessonId}/media/upload`,
+        formData,
+    );
+}
+
+// uploadMaterial sends a file directly, as an alternative to addMaterial's
+// URL-based flow. title defaults to the uploaded filename on the backend if
+// omitted here.
+export async function uploadMaterial(
+    courseId: string,
+    lessonId: string,
+    file: File,
+    title: string,
+) {
+    const formData = new FormData();
+    formData.set('file', file);
+    if (title.trim()) {
+        formData.set('title', title.trim());
+    }
+    return requestFormData<TeacherMaterial>(
+        `/api/v1/teacher/courses/${courseId}/lessons/${lessonId}/materials/upload`,
+        formData,
     );
 }

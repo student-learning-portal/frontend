@@ -5,7 +5,7 @@ import { authorizeUser } from '@/lib/api/auth';
 import { z } from 'zod';
 import { User } from '@/models/User';
 
-export const { auth, signIn, signOut } = NextAuth({
+export const { auth, handlers, signIn, signOut } = NextAuth({
     ...authConfig,
     providers: [
         Credentials({

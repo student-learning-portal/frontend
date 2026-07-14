@@ -30,8 +30,14 @@ export const authConfig = {
                 nextUrl.pathname.startsWith('/catalog') ||
                 nextUrl.pathname.startsWith('/course');
 
-            if (isTeacher && (nextUrl.pathname.startsWith('/catalog') || nextUrl.pathname.startsWith('/course'))) {
-                return Response.redirect(new URL('/dashboard/teacher', nextUrl));
+            if (
+                isTeacher &&
+                (nextUrl.pathname.startsWith('/catalog') ||
+                    nextUrl.pathname.startsWith('/course'))
+            ) {
+                return Response.redirect(
+                    new URL('/dashboard/teacher', nextUrl),
+                );
             }
 
             if (isNotPublicRoute) {

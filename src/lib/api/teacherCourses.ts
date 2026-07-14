@@ -105,7 +105,9 @@ async function requestFormData<T>(
         }
 
         const text = await response.text();
-        console.error(`[teacherCourses] ${response.status} POST ${url} :: ${text}`);
+        console.error(
+            `[teacherCourses] ${response.status} POST ${url} :: ${text}`,
+        );
         return { ok: false, message: translateError(response.status, text) };
     } catch (err) {
         console.error(`[teacherCourses] fetch failed for ${url}:`, err);

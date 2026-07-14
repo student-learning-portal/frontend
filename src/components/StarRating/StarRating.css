@@ -1,0 +1,62 @@
+.star-rating {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+}
+
+/* --- Режим просмотра: дробное заполнение --- */
+.star-rating__track {
+    position: relative;
+    display: inline-flex;
+    white-space: nowrap;
+}
+
+.star-rating--readonly .star-rating__track > .star-rating__star {
+    color: #d8dce3;
+}
+
+.star-rating__fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-flex;
+    overflow: hidden;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.star-rating__fill .star-rating__star {
+    color: #f5a623;
+}
+
+.star-rating__star {
+    display: inline-block;
+}
+
+/* --- Интерактивный ввод --- */
+.star-rating__btn {
+    border: none;
+    background: none;
+    padding: 0 1px;
+    margin: 0;
+    cursor: pointer;
+    color: #d8dce3;
+    line-height: 1;
+    font-size: inherit;
+    transition:
+        color 0.12s ease,
+        transform 0.08s ease;
+}
+
+.star-rating__btn:hover:not(:disabled) {
+    transform: scale(1.15);
+}
+
+.star-rating__btn--on {
+    color: #f5a623;
+}
+
+.star-rating__btn:disabled {
+    cursor: default;
+    opacity: 0.6;
+}

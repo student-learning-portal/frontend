@@ -121,6 +121,66 @@
     color: var(--navy-56);
 }
 
+.course-teacher__rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* ---------------- Rating ---------------- */
+.course-rating-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0 4px;
+    flex-wrap: wrap;
+}
+
+.course-rating-summary__text {
+    font-size: 14px;
+    color: var(--navy-56);
+}
+
+.course-rating-summary__text strong {
+    color: var(--navy);
+    font-size: 16px;
+}
+
+.course-rating-summary__text--muted {
+    font-style: italic;
+}
+
+.course-rate {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
+    margin: 4px 0 8px;
+    border: 1px solid var(--navy-8);
+    border-radius: 12px;
+    background: var(--navy-2, rgba(0, 0, 0, 0.02));
+}
+
+.course-rate__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.course-rate__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    min-width: 180px;
+}
+
+.course-rate__mine {
+    font-size: 13px;
+    color: var(--navy-56);
+}
+
 /* ---------------- Course content ---------------- */
 .course-content__title {
     font-size: 20px;

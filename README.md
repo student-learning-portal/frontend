@@ -6,6 +6,7 @@ Actions call the backend directly with the caller's JWT; there is no
 separate client-side API layer.
 
 ## Prerequisites
+
 - Node.js 22+
 - The backend running and reachable (see `../backend/README.md`), or the
   shared dev stack in `../infra`.
@@ -23,11 +24,11 @@ Open [http://localhost:3000](http://localhost:3000).
 
 The app reads exactly one backend-related variable, server-side only:
 
-| Variable | Meaning |
-|---|---|
-| `BACKEND_URL` | Base URL of the Go backend, e.g. `http://localhost:8080`. Read directly via `process.env.BACKEND_URL` in every `src/lib/api/*.ts` file — there is no client-side/`NEXT_PUBLIC_*` variant in the current code. |
-| `AUTH_SECRET` | NextAuth session encryption secret. |
-| `AUTH_TRUST_HOST` | Set `true` when running behind a reverse proxy. |
+| Variable          | Meaning                                                                                                                                                                                                       |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BACKEND_URL`     | Base URL of the Go backend, e.g. `http://localhost:8080`. Read directly via `process.env.BACKEND_URL` in every `src/lib/api/*.ts` file — there is no client-side/`NEXT_PUBLIC_*` variant in the current code. |
+| `AUTH_SECRET`     | NextAuth session encryption secret.                                                                                                                                                                           |
+| `AUTH_TRUST_HOST` | Set `true` when running behind a reverse proxy.                                                                                                                                                               |
 
 There is no `.env.example` inside `frontend/` — these are documented (and
 templated) in `../infra/.env.example` / `../infra/README.md` for the shared
@@ -57,22 +58,23 @@ an unused/planned dependency, not a wired-up state layer.
 
 ### Routes (`src/app`)
 
-| Route | Purpose |
-|---|---|
-| `/` | Redirects to `/login` |
-| `/login`, `/registration` | Auth forms (route group `(auth)`) |
-| `/catalog` | Course catalog: search, subject/price filter, sort |
-| `/course` | Course detail — locked (buy CTA) vs. unlocked (open lessons CTA) view |
-| `/course/lessons` | Lesson list for a course |
-| `/course/lesson` | Lesson player (video/media, resume-position tracking) |
-| `/dashboard` | Student home |
-| `/dashboard/my-courses`, `/payments`, `/results`, `/settings` | Student account pages |
-| `/dashboard/teacher` | Teacher analytics — learner activity / at-risk ranking |
-| `/dashboard/teacher/courses`, `/courses/new`, `/courses/[id]`, `/courses/[id]/lessons/[lessonId]` | Teacher course/lesson authoring (create, edit, manage content) |
+| Route                                                                                             | Purpose                                                               |
+| ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `/`                                                                                               | Redirects to `/login`                                                 |
+| `/login`, `/registration`                                                                         | Auth forms (route group `(auth)`)                                     |
+| `/catalog`                                                                                        | Course catalog: search, subject/price filter, sort                    |
+| `/course`                                                                                         | Course detail — locked (buy CTA) vs. unlocked (open lessons CTA) view |
+| `/course/lessons`                                                                                 | Lesson list for a course                                              |
+| `/course/lesson`                                                                                  | Lesson player (video/media, resume-position tracking)                 |
+| `/dashboard`                                                                                      | Student home                                                          |
+| `/dashboard/my-courses`, `/payments`, `/results`, `/settings`                                     | Student account pages                                                 |
+| `/dashboard/teacher`                                                                              | Teacher analytics — learner activity / at-risk ranking                |
+| `/dashboard/teacher/courses`, `/courses/new`, `/courses/[id]`, `/courses/[id]/lessons/[lessonId]` | Teacher course/lesson authoring (create, edit, manage content)        |
 
 ## Auth
 
 NextAuth v5 (beta), Credentials provider only:
+
 - `src/auth.ts` calls `authorizeUser()` (`src/lib/api/auth.ts`), which `POST`s
   email/password to the Go backend's `/api/v1/auth/login`.
 - The backend's JWT becomes `session.accessToken` via the `jwt`/`session`
@@ -92,6 +94,7 @@ npm run test:watch
 ```
 
 Current suite is small — 2 files:
+
 - `src/app/course/lesson/__tests__/LessonViewer.test.tsx` — resume-seek
   behavior (seeks to the last saved position on `loadedmetadata`, never seeks
   past the media duration).
@@ -120,6 +123,7 @@ command above for a current number before relying on this snapshot.
 ```bash
 npm run lint
 ```
+
 Currently clean (no errors/warnings from ESLint itself). You may see a Node
 `MODULE_TYPELESS_PACKAGE_JSON` warning because `package.json` lacks
 `"type": "module"` while `eslint.config.js` uses ESM syntax — cosmetic, does

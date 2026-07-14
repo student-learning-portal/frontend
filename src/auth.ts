@@ -17,6 +17,7 @@ export const { auth, signIn, signOut } = NextAuth({
                 if (parsedCredentials.success) {
                     const { email, password } = parsedCredentials.data;
                     const result = await authorizeUser(email, password);
+                    if (!result) return null;
                     return {
                         id: result.user.id,
                         email: result.user.email,

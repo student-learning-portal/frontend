@@ -24,10 +24,15 @@ export const authConfig = {
         authorized({ auth, request: { nextUrl } }) {
             console.log('authorized', nextUrl.pathname);
             const isLoggedIn = !!auth?.user;
+            const isTeacher = auth?.user?.role === 'teacher';
             const isNotPublicRoute =
                 nextUrl.pathname.startsWith('/dashboard') ||
                 nextUrl.pathname.startsWith('/catalog') ||
                 nextUrl.pathname.startsWith('/course');
+
+            if (isTeacher && (nextUrl.pathname.startsWith('/catalog') || nextUrl.pathname.startsWith('/course'))) {
+                return Response.redirect(new URL('/dashboard/teacher', nextUrl));
+            }
 
             if (isNotPublicRoute) {
                 return isLoggedIn;

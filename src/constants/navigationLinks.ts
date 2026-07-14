@@ -35,11 +35,6 @@ export const teacherNavigationLinkProps: StudentNavigationLinkProps[] = [
         iconName: 'home',
     },
     {
-        title: 'Каталог',
-        href: '/catalog',
-        iconName: 'search',
-    },
-    {
         title: 'Мои курсы',
         href: '/dashboard/teacher/courses',
         iconName: 'book',

@@ -4,6 +4,7 @@ import './coursePage.css';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
+import { useSession } from 'next-auth/react';
 import { Course } from '@/models/Course';
 import { getCourseById, getMyCourses } from '@/lib/api/courses';
 import { checkout, refund } from '@/lib/api/purchase';
@@ -25,6 +26,8 @@ function getInitials(name: string): string {
 export default function CourseDetail() {
     const searchParams = useSearchParams();
     const id = searchParams.get('id') ?? '';
+    const { data: session } = useSession();
+    const isTeacher = session?.user?.role === 'teacher';
 
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
@@ -140,6 +143,7 @@ export default function CourseDetail() {
     }
 
     const currency = course.currency ?? 'USD';
+    const isOwnCourse = isTeacher && course.teacher_id === session?.user?.id;
 
     return (
         <div className="course-page">
@@ -188,7 +192,24 @@ export default function CourseDetail() {
                             Содержание курса
                         </h2>
 
-                        {owned ? (
+                        {isOwnCourse ? (
+                            <div className="course-room">
+                                <div className="course-room__badge">
+                                    <Icon name="check" size={18} />
+                                    Ваш курс
+                                </div>
+                                <p className="course-room__text">
+                                    Все уроки и материалы курса доступны.
+                                </p>
+                                <Link
+                                    href={`/course/lessons?course=${course.id}`}
+                                    className="course-room__cta"
+                                >
+                                    <Icon name="play" size={18} />
+                                    Перейти к урокам
+                                </Link>
+                            </div>
+                        ) : owned ? (
                             <div className="course-room">
                                 <div className="course-room__badge">
                                     <Icon name="check" size={18} />
@@ -211,8 +232,9 @@ export default function CourseDetail() {
                                     <Icon name="lock" size={26} />
                                 </span>
                                 <p className="course-locked__text">
-                                    Уроки закрыты. Купите курс, чтобы открыть
-                                    доступ.
+                                    {isTeacher
+                                        ? 'Покупка курсов недоступна для преподавателей.'
+                                        : 'Уроки закрыты. Купите курс, чтобы открыть доступ.'}
                                 </p>
                             </div>
                         )}
@@ -226,58 +248,84 @@ export default function CourseDetail() {
                         {formatMoney(course.price, currency)}
                     </div>
 
-                    <div
-                        className={`course-buybox__status course-buybox__status--${
-                            owned ? 'unlocked' : 'locked'
-                        }`}
-                    >
-                        <Icon name={owned ? 'check' : 'lock'} size={14} />
-                        {owned ? 'Курс куплен' : 'Нет доступа'}
-                    </div>
-
-                    {feedback && (
-                        <div
-                            className={`course-buybox__feedback course-buybox__feedback--${feedback.type}`}
-                        >
-                            {feedback.text}
-                        </div>
-                    )}
-
-                    {owned ? (
-                        <div className="course-buybox__actions">
-                            <Button disabled>Открыть курс</Button>
-                            <Button
-                                variant="secondary"
-                                onClick={() => setConfirming('refund')}
-                                disabled={isPending}
+                    {isTeacher ? (
+                        <>
+                            <div
+                                className={`course-buybox__status course-buybox__status--${isOwnCourse ? 'unlocked' : 'locked'}`}
                             >
-                                {isPending ? 'Обработка…' : 'Вернуть курс'}
-                            </Button>
-                        </div>
+                                <Icon name={isOwnCourse ? 'check' : 'lock'} size={14} />
+                                {isOwnCourse ? 'Ваш курс' : 'Недоступно'}
+                            </div>
+                            {isOwnCourse ? (
+                                <div className="course-buybox__actions">
+                                    <Link
+                                        href={`/course/lessons?course=${course.id}`}
+                                        className="course-room__cta"
+                                    >
+                                        <Icon name="play" size={18} />
+                                        Перейти к урокам
+                                    </Link>
+                                </div>
+                            ) : (
+                                <p className="course-buybox__note">
+                                    Покупка курсов недоступна для преподавателей.
+                                </p>
+                            )}
+                        </>
                     ) : (
-                        <div className="course-buybox__actions">
-                            <Button
-                                onClick={() => setConfirming('buy')}
-                                disabled={isPending}
+                        <>
+                            <div
+                                className={`course-buybox__status course-buybox__status--${owned ? 'unlocked' : 'locked'}`}
                             >
-                                {isPending
-                                    ? 'Обработка…'
-                                    : `Купить за ${formatMoney(course.price, currency)}`}
-                            </Button>
-                        </div>
-                    )}
+                                <Icon name={owned ? 'check' : 'lock'} size={14} />
+                                {owned ? 'Курс куплен' : 'Нет доступа'}
+                            </div>
 
-                    {balance !== null && (
-                        <div className="course-buybox__wallet">
-                            Баланс:{' '}
-                            <strong>{formatMoney(balance, currency)}</strong>
-                        </div>
-                    )}
+                            {feedback && (
+                                <div
+                                    className={`course-buybox__feedback course-buybox__feedback--${feedback.type}`}
+                                >
+                                    {feedback.text}
+                                </div>
+                            )}
 
-                    <p className="course-buybox__note">
-                        Оплата происходит 🪙 в песочнице — реальные деньги не
-                        списываются.
-                    </p>
+                            {owned ? (
+                                <div className="course-buybox__actions">
+                                    <Button disabled>Открыть курс</Button>
+                                    <Button
+                                        variant="secondary"
+                                        onClick={() => setConfirming('refund')}
+                                        disabled={isPending}
+                                    >
+                                        {isPending ? 'Обработка…' : 'Вернуть курс'}
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div className="course-buybox__actions">
+                                    <Button
+                                        onClick={() => setConfirming('buy')}
+                                        disabled={isPending}
+                                    >
+                                        {isPending
+                                            ? 'Обработка…'
+                                            : `Купить за ${formatMoney(course.price, currency)}`}
+                                    </Button>
+                                </div>
+                            )}
+
+                            {balance !== null && (
+                                <div className="course-buybox__wallet">
+                                    Баланс:{' '}
+                                    <strong>{formatMoney(balance, currency)}</strong>
+                                </div>
+                            )}
+
+                            <p className="course-buybox__note">
+                                Оплата происходит 🪙 в песочнице — реальные деньги не
+                                списываются.
+                            </p>
+                        </>
+                    )}
                 </aside>
             </div>
 

@@ -290,9 +290,20 @@ export default function CourseEditor({
                     <h1 className="tf-title">{course.title}</h1>
                     <p className="tf-subtitle">Настройки курса и программа</p>
                 </div>
-                <span className={`tf-status-badge tf-status-badge--${status}`}>
-                    {STATUS_LABEL[status] ?? status}
-                </span>
+                <div className="tf-head__actions">
+                    <Link
+                        href={`/dashboard/teacher/courses/${course.id}/chat`}
+                        className="tf-chat-link"
+                    >
+                        <Icon name="chat" size={16} />
+                        Сообщения
+                    </Link>
+                    <span
+                        className={`tf-status-badge tf-status-badge--${status}`}
+                    >
+                        {STATUS_LABEL[status] ?? status}
+                    </span>
+                </div>
             </header>
 
             {notice && (

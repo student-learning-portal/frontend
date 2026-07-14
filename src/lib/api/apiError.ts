@@ -25,8 +25,7 @@ const MESSAGE_MAP: Record<string, string> = {
     // Права доступа
     'student role required': 'Действие доступно только ученикам.',
     'teacher role required': 'Действие доступно только преподавателям.',
-    'access denied: no active entitlement':
-        'Нет доступа: курс не приобретён.',
+    'access denied: no active entitlement': 'Нет доступа: курс не приобретён.',
     'you do not own this course': 'Это не ваш курс.',
     'not allowed for this course': 'Действие недоступно для этого курса.',
     'teachers cannot purchase courses':
@@ -125,7 +124,9 @@ function extractRawMessage(raw: string): string | undefined {
                         ? (item as { msg?: unknown }).msg
                         : undefined,
                 )
-                .filter((m): m is string => typeof m === 'string' && m.length > 0);
+                .filter(
+                    (m): m is string => typeof m === 'string' && m.length > 0,
+                );
             if (messages.length) return messages.join('; ');
         }
     } catch {
@@ -190,7 +191,10 @@ export function translateError(status: number, raw?: string): string {
 // Строит ApiError из неуспешного ответа fetch.
 export async function buildApiError(response: Response): Promise<ApiError> {
     const raw = await response.text().catch(() => '');
-    return { status: response.status, message: translateError(response.status, raw) };
+    return {
+        status: response.status,
+        message: translateError(response.status, raw),
+    };
 }
 
 // Ошибка сети / недоступного сервера (fetch выбросил исключение).

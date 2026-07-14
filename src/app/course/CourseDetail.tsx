@@ -13,6 +13,28 @@ import Button from '@/components/UI/Button/Button';
 import Icon from '@/components/UI/Icon/Icon';
 import { emitCoinBalanceUpdate } from '@/components/CoinBalance/coinBalanceEvents';
 import { useToast } from '@/components/Toast/ToastProvider';
+import StarRating from '@/components/StarRating/StarRating';
+import {
+    getCourseRatingSummary,
+    getMyCourseRating,
+    rateCourse,
+    getTeacherRatingSummary,
+    getMyTeacherRating,
+    rateTeacher,
+    RatingSummary,
+} from '@/lib/api/ratings';
+
+function formatScore(value: number): string {
+    return value.toFixed(1).replace('.', ',');
+}
+
+function pluralizeRatings(count: number): string {
+    const m10 = count % 10;
+    const m100 = count % 100;
+    if (m10 === 1 && m100 !== 11) return 'оценка';
+    if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return 'оценки';
+    return 'оценок';
+}
 
 function formatMoney(amount: number, _currency?: string): string {
     void _currency;
@@ -21,7 +43,9 @@ function formatMoney(amount: number, _currency?: string): string {
 
 function getInitials(name: string): string {
     const parts = name.trim().split(/\s+/);
-    return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || 'ПР';
+    return (
+        ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || 'ПР'
+    );
 }
 
 export default function CourseDetail() {
@@ -45,25 +69,44 @@ export default function CourseDetail() {
     const [confirming, setConfirming] = useState<null | 'buy' | 'refund'>(null);
     const [teacher, setTeacher] = useState<Teacher | null>(null);
 
+    const [courseRating, setCourseRating] = useState<RatingSummary | null>(null);
+    const [myCourseScore, setMyCourseScore] = useState<number | null>(null);
+    const [teacherRating, setTeacherRating] = useState<RatingSummary | null>(
+        null,
+    );
+    const [myTeacherScore, setMyTeacherScore] = useState<number | null>(null);
+    const [ratingBusy, setRatingBusy] = useState(false);
+
     const [isPending, startTransition] = useTransition();
 
     useEffect(() => {
         let active = true;
         (async () => {
-            const [data, myCourses] = await Promise.all([
-                getCourseById(id),
-                getMyCourses(),
-            ]);
+            const [data, myCourses, courseSummary, myCourse] =
+                await Promise.all([
+                    getCourseById(id),
+                    getMyCourses(),
+                    getCourseRatingSummary(id),
+                    getMyCourseRating(id),
+                ]);
             if (!active) return;
             setCourse(data);
             setNotFound(!data);
             setOwned(myCourses.some((c) => c.id === id));
+            setCourseRating(courseSummary);
+            setMyCourseScore(myCourse);
             setLoading(false);
 
             if (data?.teacher_id) {
-                const t = await getTeacher(data.teacher_id);
+                const [t, teacherSummary, myTeacher] = await Promise.all([
+                    getTeacher(data.teacher_id),
+                    getTeacherRatingSummary(data.teacher_id),
+                    getMyTeacherRating(data.teacher_id),
+                ]);
                 if (!active) return;
                 setTeacher(t);
+                setTeacherRating(teacherSummary);
+                setMyTeacherScore(myTeacher);
             }
         })();
         return () => {
@@ -120,6 +163,40 @@ export default function CourseDetail() {
         });
     }
 
+    function submitCourseRating(score: number) {
+        if (!course || ratingBusy) return;
+        setRatingBusy(true);
+        startTransition(async () => {
+            const res = await rateCourse(course.id, score);
+            if (res.ok) {
+                setMyCourseScore(res.score);
+                const summary = await getCourseRatingSummary(course.id);
+                setCourseRating(summary);
+                toast.success(`Ваша оценка курса: ${res.score}/10`);
+            } else {
+                toast.error(res.message);
+            }
+            setRatingBusy(false);
+        });
+    }
+
+    function submitTeacherRating(score: number) {
+        if (!teacher || ratingBusy) return;
+        setRatingBusy(true);
+        startTransition(async () => {
+            const res = await rateTeacher(teacher.id, score);
+            if (res.ok) {
+                setMyTeacherScore(res.score);
+                const summary = await getTeacherRatingSummary(teacher.id);
+                setTeacherRating(summary);
+                toast.success(`Ваша оценка преподавателя: ${res.score}/10`);
+            } else {
+                toast.error(res.message);
+            }
+            setRatingBusy(false);
+        });
+    }
+
     if (loading) {
         return (
             <div className="course-page">
@@ -169,6 +246,34 @@ export default function CourseDetail() {
 
                     <h1 className="course-main__title">{course.title}</h1>
 
+                    {courseRating && (
+                        <div className="course-rating-summary">
+                            <StarRating
+                                value={courseRating.average_score}
+                                readOnly
+                                size={18}
+                            />
+                            {courseRating.ratings_count > 0 ? (
+                                <span className="course-rating-summary__text">
+                                    <strong>
+                                        {formatScore(
+                                            courseRating.average_score,
+                                        )}
+                                    </strong>
+                                    {' / 10 · '}
+                                    {courseRating.ratings_count}{' '}
+                                    {pluralizeRatings(
+                                        courseRating.ratings_count,
+                                    )}
+                                </span>
+                            ) : (
+                                <span className="course-rating-summary__text course-rating-summary__text--muted">
+                                    Пока нет оценок
+                                </span>
+                            )}
+                        </div>
+                    )}
+
                     {course.description && (
                         <p className="course-main__description">
                             {course.description}
@@ -183,11 +288,67 @@ export default function CourseDetail() {
                             <span className="course-teacher__name">
                                 {teacher?.full_name ?? 'Преподаватель'}
                             </span>
-                            <span className="course-teacher__hint">
-                                {teacher ? 'Преподаватель курса' : 'Загрузка…'}
-                            </span>
+                            {teacher && teacherRating ? (
+                                <span className="course-teacher__rating">
+                                    <StarRating
+                                        value={teacherRating.average_score}
+                                        readOnly
+                                        size={14}
+                                    />
+                                    <span className="course-teacher__hint">
+                                        {teacherRating.ratings_count > 0
+                                            ? `${formatScore(teacherRating.average_score)} / 10 · ${teacherRating.ratings_count} ${pluralizeRatings(teacherRating.ratings_count)}`
+                                            : 'Преподаватель курса'}
+                                    </span>
+                                </span>
+                            ) : (
+                                <span className="course-teacher__hint">
+                                    {teacher
+                                        ? 'Преподаватель курса'
+                                        : 'Загрузка…'}
+                                </span>
+                            )}
                         </span>
                     </div>
+
+                    {!isTeacher && owned && (
+                        <div className="course-rate">
+                            <div className="course-rate__row">
+                                <span className="course-rate__label">
+                                    Оцените курс
+                                </span>
+                                <StarRating
+                                    value={myCourseScore ?? 0}
+                                    disabled={ratingBusy}
+                                    size={22}
+                                    onRate={submitCourseRating}
+                                />
+                                {myCourseScore != null && (
+                                    <span className="course-rate__mine">
+                                        Ваша оценка: {myCourseScore}/10
+                                    </span>
+                                )}
+                            </div>
+                            {teacher && (
+                                <div className="course-rate__row">
+                                    <span className="course-rate__label">
+                                        Оцените преподавателя
+                                    </span>
+                                    <StarRating
+                                        value={myTeacherScore ?? 0}
+                                        disabled={ratingBusy}
+                                        size={22}
+                                        onRate={submitTeacherRating}
+                                    />
+                                    {myTeacherScore != null && (
+                                        <span className="course-rate__mine">
+                                            Ваша оценка: {myTeacherScore}/10
+                                        </span>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     <section className="course-content">
                         <h2 className="course-content__title">
@@ -255,7 +416,10 @@ export default function CourseDetail() {
                             <div
                                 className={`course-buybox__status course-buybox__status--${isOwnCourse ? 'unlocked' : 'locked'}`}
                             >
-                                <Icon name={isOwnCourse ? 'check' : 'lock'} size={14} />
+                                <Icon
+                                    name={isOwnCourse ? 'check' : 'lock'}
+                                    size={14}
+                                />
                                 {isOwnCourse ? 'Ваш курс' : 'Недоступно'}
                             </div>
                             {isOwnCourse ? (
@@ -270,7 +434,8 @@ export default function CourseDetail() {
                                 </div>
                             ) : (
                                 <p className="course-buybox__note">
-                                    Покупка курсов недоступна для преподавателей.
+                                    Покупка курсов недоступна для
+                                    преподавателей.
                                 </p>
                             )}
                         </>
@@ -279,7 +444,10 @@ export default function CourseDetail() {
                             <div
                                 className={`course-buybox__status course-buybox__status--${owned ? 'unlocked' : 'locked'}`}
                             >
-                                <Icon name={owned ? 'check' : 'lock'} size={14} />
+                                <Icon
+                                    name={owned ? 'check' : 'lock'}
+                                    size={14}
+                                />
                                 {owned ? 'Курс куплен' : 'Нет доступа'}
                             </div>
 
@@ -299,7 +467,9 @@ export default function CourseDetail() {
                                         onClick={() => setConfirming('refund')}
                                         disabled={isPending}
                                     >
-                                        {isPending ? 'Обработка…' : 'Вернуть курс'}
+                                        {isPending
+                                            ? 'Обработка…'
+                                            : 'Вернуть курс'}
                                     </Button>
                                 </div>
                             ) : (
@@ -318,13 +488,15 @@ export default function CourseDetail() {
                             {balance !== null && (
                                 <div className="course-buybox__wallet">
                                     Баланс:{' '}
-                                    <strong>{formatMoney(balance, currency)}</strong>
+                                    <strong>
+                                        {formatMoney(balance, currency)}
+                                    </strong>
                                 </div>
                             )}
 
                             <p className="course-buybox__note">
-                                Оплата происходит 🪙 в песочнице — реальные деньги не
-                                списываются.
+                                Оплата происходит 🪙 в песочнице — реальные
+                                деньги не списываются.
                             </p>
                         </>
                     )}

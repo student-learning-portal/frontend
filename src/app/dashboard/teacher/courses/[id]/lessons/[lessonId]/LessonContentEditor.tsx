@@ -21,8 +21,10 @@ const MEDIA_TYPE_OPTIONS = [
     { title: 'Аудио', value: 'audio' },
 ];
 
-const MEDIA_UPLOAD_ACCEPT = 'video/mp4,video/webm,audio/mpeg,audio/wav,audio/ogg';
-const MATERIAL_UPLOAD_ACCEPT = 'application/pdf,application/zip,image/jpeg,image/png';
+const MEDIA_UPLOAD_ACCEPT =
+    'video/mp4,video/webm,audio/mpeg,audio/wav,audio/ogg';
+const MATERIAL_UPLOAD_ACCEPT =
+    'application/pdf,application/zip,image/jpeg,image/png';
 
 type Notice = { type: 'success' | 'error'; text: string };
 type Source = 'url' | 'file';
@@ -88,7 +90,9 @@ export default function LessonContentEditor({
     const [materialType, setMaterialType] = useState('pdf');
     const [materialFile, setMaterialFile] = useState<File | null>(null);
 
-    async function handleMediaFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    async function handleMediaFileChange(
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) {
         const file = e.target.files?.[0] ?? null;
         setMediaFile(file);
         if (file) {
@@ -304,7 +308,9 @@ export default function LessonContentEditor({
                                 <input
                                     className="tf-input"
                                     value={mediaUrl}
-                                    onChange={(e) => setMediaUrl(e.target.value)}
+                                    onChange={(e) =>
+                                        setMediaUrl(e.target.value)
+                                    }
                                     placeholder="https://cdn.example.com/lesson.mp4"
                                 />
                             </label>
@@ -474,9 +480,7 @@ export default function LessonContentEditor({
                                 type="file"
                                 accept={MATERIAL_UPLOAD_ACCEPT}
                                 onChange={(e) =>
-                                    setMaterialFile(
-                                        e.target.files?.[0] ?? null,
-                                    )
+                                    setMaterialFile(e.target.files?.[0] ?? null)
                                 }
                             />
                         </label>

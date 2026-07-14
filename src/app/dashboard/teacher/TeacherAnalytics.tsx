@@ -199,7 +199,9 @@ function StudentRow({ student }: { student: DashboardStudent }) {
                                 : undefined
                         }
                     >
-                        {days > 0 ? `${days} ${pluralizeDays(days)}` : 'Сегодня'}
+                        {days > 0
+                            ? `${days} ${pluralizeDays(days)}`
+                            : 'Сегодня'}
                     </span>
                 )}
             </div>

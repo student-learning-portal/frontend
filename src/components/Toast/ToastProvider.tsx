@@ -55,7 +55,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     );
 
     const error = useCallback((text: string) => show(text, 'error'), [show]);
-    const success = useCallback((text: string) => show(text, 'success'), [show]);
+    const success = useCallback(
+        (text: string) => show(text, 'success'),
+        [show],
+    );
 
     // Стабильная ссылка на значение контекста, иначе каждый показ тоста
     // ре-рендерит провайдер, меняет ссылку и вызывает бесконечный цикл
@@ -89,7 +92,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 export function useToast(): ToastContextValue {
     const ctx = useContext(ToastContext);
     if (!ctx) {
-        throw new Error('useToast должен использоваться внутри <ToastProvider>');
+        throw new Error(
+            'useToast должен использоваться внутри <ToastProvider>',
+        );
     }
     return ctx;
 }

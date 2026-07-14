@@ -4,6 +4,7 @@ import './settings.css';
 import { useRef, useState, useTransition } from 'react';
 import Button from '@/components/UI/Button/Button';
 import Icon from '@/components/UI/Icon/Icon';
+import { useToast } from '@/components/Toast/ToastProvider';
 import {
     updateName,
     updateEmail,
@@ -33,6 +34,7 @@ export default function SettingsClient({
     initialEmail,
     initialAvatar,
 }: Props) {
+    const toast = useToast();
     const [tab, setTab] = useState<Tab>('profile');
     const [notice, setNotice] = useState<Notice | null>(null);
     const [isPending, startTransition] = useTransition();
@@ -47,6 +49,13 @@ export default function SettingsClient({
         initialAvatar ?? null,
     );
     const fileRef = useRef<HTMLInputElement>(null);
+
+    // Показывает сообщение и во всплывашке, и в карточке настроек.
+    function notify(n: Notice) {
+        setNotice(n);
+        if (n.type === 'error') toast.error(n.text);
+        else toast.success(n.text);
+    }
 
     async function refresh() {
         const me = await getMe();
@@ -74,9 +83,9 @@ export default function SettingsClient({
             if (res.ok) {
                 await refresh();
                 setPhoto(null);
-                setNotice({ type: 'success', text: 'Фото обновлено.' });
+                notify({ type: 'success', text: 'Фото обновлено.' });
             } else {
-                setNotice({ type: 'error', text: res.message });
+                notify({ type: 'error', text: res.message });
             }
         });
     }
@@ -88,13 +97,13 @@ export default function SettingsClient({
             if (name.trim() && name !== savedName) {
                 const res = await updateName(name.trim());
                 if (!res.ok) {
-                    setNotice({ type: 'error', text: res.message });
+                    notify({ type: 'error', text: res.message });
                     return;
                 }
             }
             if (email !== savedEmail) {
                 if (!emailPassword) {
-                    setNotice({
+                    notify({
                         type: 'error',
                         text: 'Введите текущий пароль, чтобы сменить email.',
                     });
@@ -102,13 +111,13 @@ export default function SettingsClient({
                 }
                 const res = await updateEmail(emailPassword, email);
                 if (!res.ok) {
-                    setNotice({ type: 'error', text: res.message });
+                    notify({ type: 'error', text: res.message });
                     return;
                 }
                 setEmailPassword('');
             }
             await refresh();
-            setNotice({ type: 'success', text: 'Профиль сохранён.' });
+            notify({ type: 'success', text: 'Профиль сохранён.' });
         });
     }
 
@@ -116,7 +125,7 @@ export default function SettingsClient({
         e.preventDefault();
         setNotice(null);
         if (newPass !== confirmPass) {
-            setNotice({ type: 'error', text: 'Новые пароли не совпадают.' });
+            notify({ type: 'error', text: 'Новые пароли не совпадают.' });
             return;
         }
         startTransition(async () => {
@@ -125,9 +134,9 @@ export default function SettingsClient({
                 setCurPass('');
                 setNewPass('');
                 setConfirmPass('');
-                setNotice({ type: 'success', text: 'Пароль изменён.' });
+                notify({ type: 'success', text: 'Пароль изменён.' });
             } else {
-                setNotice({ type: 'error', text: res.message });
+                notify({ type: 'error', text: res.message });
             }
         });
     }

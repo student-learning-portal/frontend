@@ -6,11 +6,18 @@ import { useState, useTransition } from 'react';
 import Button from '@/components/UI/Button/Button';
 import Icon from '@/components/UI/Icon/Icon';
 import { createCourse } from '@/lib/api/teacherCourses';
+import { useToast } from '@/components/Toast/ToastProvider';
 
 export default function NewCourseForm() {
     const router = useRouter();
+    const toast = useToast();
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | null>(null);
+
+    function fail(message: string) {
+        setError(message);
+        toast.error(message);
+    }
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -23,11 +30,11 @@ export default function NewCourseForm() {
 
         const parsedPrice = Number(price);
         if (!title.trim()) {
-            setError('Укажите название курса.');
+            fail('Укажите название курса.');
             return;
         }
         if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
-            setError('Цена должна быть числом не меньше нуля.');
+            fail('Цена должна быть числом не меньше нуля.');
             return;
         }
 
@@ -42,7 +49,7 @@ export default function NewCourseForm() {
             if (res.ok) {
                 router.push(`/dashboard/teacher/courses/${res.data.id}`);
             } else {
-                setError(res.message);
+                fail(res.message);
             }
         });
     }

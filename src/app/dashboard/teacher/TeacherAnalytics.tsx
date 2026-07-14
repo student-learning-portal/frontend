@@ -7,6 +7,7 @@ import { SelectOption } from '@/types/selectOption';
 import Select from '@/components/UI/Select/Select';
 import SearchBar from '@/components/SearchBar/SearchBar';
 import Icon from '@/components/UI/Icon/Icon';
+import { useToast } from '@/components/Toast/ToastProvider';
 import {
     DashboardStudent,
     TeacherDashboard,
@@ -212,6 +213,7 @@ export default function TeacherAnalytics({ courses }: { courses: Course[] }) {
         [courses],
     );
 
+    const toast = useToast();
     const [courseId, setCourseId] = useState(courses[0]?.id ?? '');
     const [data, setData] = useState<TeacherDashboard | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -231,9 +233,10 @@ export default function TeacherAnalytics({ courses }: { courses: Course[] }) {
             } else {
                 setData(null);
                 setError(res.message);
+                toast.error(res.message);
             }
         });
-    }, [courseId]);
+    }, [courseId, toast]);
 
     const students = useMemo(() => data?.students ?? [], [data]);
 

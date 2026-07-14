@@ -2,6 +2,7 @@
 
 import { auth } from '@/auth';
 import { RiskStatus } from '@/lib/api/analytics';
+import { translateError } from './apiError';
 
 export type CourseResult = {
     course_id: string;
@@ -47,15 +48,9 @@ export async function getMyResults(): Promise<MyResultsResult> {
             };
         }
 
-        switch (response.status) {
-            case 401:
-                return { ok: false, message: 'Сессия истекла. Войдите снова.' };
-            default:
-                return {
-                    ok: false,
-                    message: 'Не удалось загрузить результаты.',
-                };
-        }
+        const text = await response.text();
+        console.error(`[getMyResults] ${response.status} :: ${text}`);
+        return { ok: false, message: translateError(response.status, text) };
     } catch (err) {
         console.error(`[getMyResults] fetch failed for ${url}:`, err);
         return { ok: false, message: 'Сервер недоступен. Попробуйте позже.' };

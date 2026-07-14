@@ -2,6 +2,7 @@
 
 import { auth } from '@/auth';
 import { Course } from '@/models/Course';
+import { ApiError, buildApiError, networkError } from './apiError';
 
 type FilterParams = {
     search?: string;
@@ -14,7 +15,14 @@ type FilterParams = {
     page_size?: number;
 };
 
-export async function getCourses(filters: FilterParams) {
+// Результат запроса: либо данные, либо ошибка с русским сообщением.
+export type CoursesResult =
+    | { data: unknown; error?: undefined }
+    | { data?: undefined; error: ApiError };
+
+export async function getCourses(
+    filters: FilterParams,
+): Promise<CoursesResult> {
     const session = await auth();
 
     const params = new URLSearchParams();
@@ -38,17 +46,17 @@ export async function getCourses(filters: FilterParams) {
         });
 
         if (!response.ok) {
-            const body = await response.text();
+            const error = await buildApiError(response);
             console.error(
-                `[getCourses] ${response.status} ${response.statusText} from ${url} :: ${body}`,
+                `[getCourses] ${response.status} ${response.statusText} from ${url} :: ${error.message}`,
             );
-            return null;
+            return { error };
         }
 
-        return await response.json();
+        return { data: await response.json() };
     } catch (err) {
         console.error(`[getCourses] fetch failed for ${url}:`, err);
-        return null;
+        return { error: networkError() };
     }
 }
 
@@ -63,8 +71,8 @@ function normalizeCourses(res: unknown): Course[] {
 export async function getCourseById(id: string): Promise<Course | null> {
     if (!id) return null;
     const res = await getCourses({ page_size: 200 });
-    if (res === null) return null;
-    const courses = normalizeCourses(res);
+    if (res.error) return null;
+    const courses = normalizeCourses(res.data);
     return courses.find((c) => c.id === id) ?? null;
 }
 

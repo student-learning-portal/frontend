@@ -2,6 +2,7 @@
 
 import { auth } from '@/auth';
 import { Course } from '@/models/Course';
+import { translateError } from './apiError';
 
 export type RiskStatus = 'ON_TRACK' | 'AT_RISK';
 
@@ -93,22 +94,9 @@ export async function getTeacherDashboard(
             };
         }
 
-        switch (response.status) {
-            case 401:
-                return { ok: false, message: 'Сессия истекла. Войдите снова.' };
-            case 403:
-                return {
-                    ok: false,
-                    message: 'Доступно только преподавателю — владельцу курса.',
-                };
-            case 404:
-                return { ok: false, message: 'Курс не найден.' };
-            default:
-                return {
-                    ok: false,
-                    message: 'Не удалось загрузить аналитику.',
-                };
-        }
+        const text = await response.text();
+        console.error(`[getTeacherDashboard] ${response.status} :: ${text}`);
+        return { ok: false, message: translateError(response.status, text) };
     } catch (err) {
         console.error(`[getTeacherDashboard] fetch failed for ${url}:`, err);
         return { ok: false, message: 'Сервер недоступен. Попробуйте позже.' };

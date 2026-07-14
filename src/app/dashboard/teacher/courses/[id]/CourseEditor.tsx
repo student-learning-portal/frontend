@@ -8,6 +8,7 @@ import { LessonSummary, LessonType } from '@/models/Lesson';
 import Button from '@/components/UI/Button/Button';
 import Select from '@/components/UI/Select/Select';
 import Icon from '@/components/UI/Icon/Icon';
+import { useToast } from '@/components/Toast/ToastProvider';
 import {
     createLesson,
     deleteCourse,
@@ -104,8 +105,16 @@ export default function CourseEditor({
     initialLessons: LessonSummary[];
 }) {
     const router = useRouter();
+    const toast = useToast();
     const [isPending, startTransition] = useTransition();
     const [notice, setNotice] = useState<Notice | null>(null);
+
+    // Показывает сообщение и во всплывашке, и в карточке редактора.
+    function notify(n: Notice) {
+        setNotice(n);
+        if (n.type === 'error') toast.error(n.text);
+        else toast.success(n.text);
+    }
 
     const [title, setTitle] = useState(course.title);
     const [description, setDescription] = useState(course.description ?? '');
@@ -131,11 +140,11 @@ export default function CourseEditor({
 
         const parsedPrice = Number(price);
         if (!title.trim()) {
-            setNotice({ type: 'error', text: 'Укажите название курса.' });
+            notify({ type: 'error', text: 'Укажите название курса.' });
             return;
         }
         if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
-            setNotice({
+            notify({
                 type: 'error',
                 text: 'Цена должна быть числом не меньше нуля.',
             });
@@ -152,9 +161,9 @@ export default function CourseEditor({
                 status: status as 'draft' | 'published' | 'archived',
             });
             if (res.ok) {
-                setNotice({ type: 'success', text: 'Курс сохранён.' });
+                notify({ type: 'success', text: 'Курс сохранён.' });
             } else {
-                setNotice({ type: 'error', text: res.message });
+                notify({ type: 'error', text: res.message });
             }
         });
     }
@@ -166,7 +175,7 @@ export default function CourseEditor({
             if (res.ok) {
                 router.push('/dashboard/teacher/courses');
             } else {
-                setNotice({ type: 'error', text: res.message });
+                notify({ type: 'error', text: res.message });
             }
         });
     }
@@ -175,7 +184,7 @@ export default function CourseEditor({
         e.preventDefault();
         setNotice(null);
         if (!newLessonTitle.trim()) {
-            setNotice({ type: 'error', text: 'Укажите название урока.' });
+            notify({ type: 'error', text: 'Укажите название урока.' });
             return;
         }
         startTransition(async () => {
@@ -197,7 +206,7 @@ export default function CourseEditor({
                 setNewLessonTitle('');
                 setNewLessonType('video');
             } else {
-                setNotice({ type: 'error', text: res.message });
+                notify({ type: 'error', text: res.message });
             }
         });
     }
@@ -208,7 +217,7 @@ export default function CourseEditor({
         newType: LessonType,
     ) {
         if (!newTitle) {
-            setNotice({ type: 'error', text: 'Укажите название урока.' });
+            notify({ type: 'error', text: 'Укажите название урока.' });
             return;
         }
         startTransition(async () => {
@@ -228,7 +237,7 @@ export default function CourseEditor({
                 );
                 setEditingId(null);
             } else {
-                setNotice({ type: 'error', text: res.message });
+                notify({ type: 'error', text: res.message });
             }
         });
     }
@@ -242,7 +251,7 @@ export default function CourseEditor({
                     prev.filter((l) => l.lesson_id !== lessonId),
                 );
             } else {
-                setNotice({ type: 'error', text: res.message });
+                notify({ type: 'error', text: res.message });
             }
         });
     }
@@ -265,7 +274,7 @@ export default function CourseEditor({
             if (res.ok) {
                 setLessons(reordered);
             } else {
-                setNotice({ type: 'error', text: res.message });
+                notify({ type: 'error', text: res.message });
             }
         });
     }

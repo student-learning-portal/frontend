@@ -6,6 +6,7 @@ import { LessonData, LessonMaterial } from '@/models/Lesson';
 import Button from '@/components/UI/Button/Button';
 import Select from '@/components/UI/Select/Select';
 import Icon from '@/components/UI/Icon/Icon';
+import { useToast } from '@/components/Toast/ToastProvider';
 import {
     addMaterial,
     deleteLessonMedia,
@@ -56,8 +57,16 @@ export default function LessonContentEditor({
     courseTitle: string;
     lesson: LessonData;
 }) {
+    const toast = useToast();
     const [isPending, startTransition] = useTransition();
     const [notice, setNotice] = useState<Notice | null>(null);
+
+    // Показывает сообщение и во всплывашке, и на странице урока.
+    function notify(n: Notice) {
+        setNotice(n);
+        if (n.type === 'error') toast.error(n.text);
+        else toast.success(n.text);
+    }
 
     const [mediaSource, setMediaSource] = useState<Source>('url');
     const [mediaUrl, setMediaUrl] = useState(lesson.content_url);
@@ -96,7 +105,7 @@ export default function LessonContentEditor({
 
         if (mediaSource === 'file') {
             if (!mediaFile) {
-                setNotice({ type: 'error', text: 'Выберите файл.' });
+                notify({ type: 'error', text: 'Выберите файл.' });
                 return;
             }
             const parsedDuration = Number(duration) || 0;
@@ -110,21 +119,21 @@ export default function LessonContentEditor({
                 if (res.ok) {
                     setHasMedia(true);
                     setMediaFile(null);
-                    setNotice({ type: 'success', text: 'Медиафайл загружен.' });
+                    notify({ type: 'success', text: 'Медиафайл загружен.' });
                 } else {
-                    setNotice({ type: 'error', text: res.message });
+                    notify({ type: 'error', text: res.message });
                 }
             });
             return;
         }
 
         if (!mediaUrl.trim()) {
-            setNotice({ type: 'error', text: 'Укажите ссылку на файл.' });
+            notify({ type: 'error', text: 'Укажите ссылку на файл.' });
             return;
         }
         const parsedDuration = Number(duration);
         if (Number.isNaN(parsedDuration) || parsedDuration < 0) {
-            setNotice({
+            notify({
                 type: 'error',
                 text: 'Длительность должна быть числом не меньше нуля.',
             });
@@ -141,9 +150,9 @@ export default function LessonContentEditor({
             );
             if (res.ok) {
                 setHasMedia(true);
-                setNotice({ type: 'success', text: 'Медиафайл сохранён.' });
+                notify({ type: 'success', text: 'Медиафайл сохранён.' });
             } else {
-                setNotice({ type: 'error', text: res.message });
+                notify({ type: 'error', text: res.message });
             }
         });
     }
@@ -157,9 +166,9 @@ export default function LessonContentEditor({
                 setMediaFile(null);
                 setDuration('0');
                 setHasMedia(false);
-                setNotice({ type: 'success', text: 'Медиафайл удалён.' });
+                notify({ type: 'success', text: 'Медиафайл удалён.' });
             } else {
-                setNotice({ type: 'error', text: res.message });
+                notify({ type: 'error', text: res.message });
             }
         });
     }
@@ -170,7 +179,7 @@ export default function LessonContentEditor({
 
         if (materialSource === 'file') {
             if (!materialFile) {
-                setNotice({ type: 'error', text: 'Выберите файл.' });
+                notify({ type: 'error', text: 'Выберите файл.' });
                 return;
             }
             startTransition(async () => {
@@ -185,14 +194,14 @@ export default function LessonContentEditor({
                     setMaterialTitle('');
                     setMaterialFile(null);
                 } else {
-                    setNotice({ type: 'error', text: res.message });
+                    notify({ type: 'error', text: res.message });
                 }
             });
             return;
         }
 
         if (!materialTitle.trim() || !materialUrl.trim()) {
-            setNotice({
+            notify({
                 type: 'error',
                 text: 'Укажите название и ссылку на материал.',
             });
@@ -211,7 +220,7 @@ export default function LessonContentEditor({
                 setMaterialTitle('');
                 setMaterialUrl('');
             } else {
-                setNotice({ type: 'error', text: res.message });
+                notify({ type: 'error', text: res.message });
             }
         });
     }
@@ -228,7 +237,7 @@ export default function LessonContentEditor({
             if (res.ok) {
                 setMaterials((prev) => prev.filter((m) => m.id !== materialId));
             } else {
-                setNotice({ type: 'error', text: res.message });
+                notify({ type: 'error', text: res.message });
             }
         });
     }

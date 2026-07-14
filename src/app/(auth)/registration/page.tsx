@@ -4,8 +4,9 @@ import Button from '@/components/UI/Button/Button';
 import Icon from '@/components/UI/Icon/Icon';
 import './registrationPage.css';
 import Input from '@/components/UI/Input/Input';
-import { useActionState, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { register } from '@/lib/actions';
+import { useToast } from '@/components/Toast/ToastProvider';
 
 export default function RegistrationPage() {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -18,6 +19,11 @@ export default function RegistrationPage() {
     });
 
     const [chosenRole, setChosenRole] = useState(state.role);
+    const toast = useToast();
+
+    useEffect(() => {
+        if (state.error) toast.error(state.error);
+    }, [state, toast]);
 
     return (
         <form action={formAction} className="registration-container">

@@ -11,6 +11,8 @@ import {
     deleteLessonMedia,
     deleteMaterial,
     setLessonMedia,
+    uploadLessonMedia,
+    uploadMaterial,
 } from '@/lib/api/teacherCourses';
 
 const MEDIA_TYPE_OPTIONS = [
@@ -18,7 +20,32 @@ const MEDIA_TYPE_OPTIONS = [
     { title: 'Аудио', value: 'audio' },
 ];
 
+const MEDIA_UPLOAD_ACCEPT = 'video/mp4,video/webm,audio/mpeg,audio/wav,audio/ogg';
+const MATERIAL_UPLOAD_ACCEPT = 'application/pdf,application/zip,image/jpeg,image/png';
+
 type Notice = { type: 'success' | 'error'; text: string };
+type Source = 'url' | 'file';
+
+// readMediaDuration loads a video/audio file into a hidden, detached <video>
+// element just long enough to read its .duration from loadedmetadata — the
+// browser has already decoded the container's metadata locally, so this
+// avoids asking the teacher to type the duration in by hand.
+function readMediaDuration(file: File): Promise<number> {
+    return new Promise((resolve) => {
+        const el = document.createElement('video');
+        const url = URL.createObjectURL(file);
+        el.preload = 'metadata';
+        el.onloadedmetadata = () => {
+            URL.revokeObjectURL(url);
+            resolve(Number.isFinite(el.duration) ? Math.round(el.duration) : 0);
+        };
+        el.onerror = () => {
+            URL.revokeObjectURL(url);
+            resolve(0);
+        };
+        el.src = url;
+    });
+}
 
 export default function LessonContentEditor({
     courseId,
@@ -32,7 +59,9 @@ export default function LessonContentEditor({
     const [isPending, startTransition] = useTransition();
     const [notice, setNotice] = useState<Notice | null>(null);
 
+    const [mediaSource, setMediaSource] = useState<Source>('url');
     const [mediaUrl, setMediaUrl] = useState(lesson.content_url);
+    const [mediaFile, setMediaFile] = useState<File | null>(null);
     const [duration, setDuration] = useState(
         String(lesson.duration_seconds || 0),
     );
@@ -44,13 +73,51 @@ export default function LessonContentEditor({
     const [materials, setMaterials] = useState<LessonMaterial[]>(
         lesson.materials,
     );
+    const [materialSource, setMaterialSource] = useState<Source>('url');
     const [materialTitle, setMaterialTitle] = useState('');
     const [materialUrl, setMaterialUrl] = useState('');
     const [materialType, setMaterialType] = useState('pdf');
+    const [materialFile, setMaterialFile] = useState<File | null>(null);
+
+    async function handleMediaFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0] ?? null;
+        setMediaFile(file);
+        if (file) {
+            const detected = await readMediaDuration(file);
+            if (detected > 0) setDuration(String(detected));
+            if (file.type.startsWith('audio/')) setMediaType('audio');
+            else if (file.type.startsWith('video/')) setMediaType('video');
+        }
+    }
 
     function handleSaveMedia(e: React.FormEvent) {
         e.preventDefault();
         setNotice(null);
+
+        if (mediaSource === 'file') {
+            if (!mediaFile) {
+                setNotice({ type: 'error', text: 'Выберите файл.' });
+                return;
+            }
+            const parsedDuration = Number(duration) || 0;
+            startTransition(async () => {
+                const res = await uploadLessonMedia(
+                    courseId,
+                    lesson.lesson_id,
+                    mediaFile,
+                    parsedDuration,
+                );
+                if (res.ok) {
+                    setHasMedia(true);
+                    setMediaFile(null);
+                    setNotice({ type: 'success', text: 'Медиафайл загружен.' });
+                } else {
+                    setNotice({ type: 'error', text: res.message });
+                }
+            });
+            return;
+        }
+
         if (!mediaUrl.trim()) {
             setNotice({ type: 'error', text: 'Укажите ссылку на файл.' });
             return;
@@ -87,6 +154,7 @@ export default function LessonContentEditor({
             const res = await deleteLessonMedia(courseId, lesson.lesson_id);
             if (res.ok) {
                 setMediaUrl('');
+                setMediaFile(null);
                 setDuration('0');
                 setHasMedia(false);
                 setNotice({ type: 'success', text: 'Медиафайл удалён.' });
@@ -99,6 +167,30 @@ export default function LessonContentEditor({
     function handleAddMaterial(e: React.FormEvent) {
         e.preventDefault();
         setNotice(null);
+
+        if (materialSource === 'file') {
+            if (!materialFile) {
+                setNotice({ type: 'error', text: 'Выберите файл.' });
+                return;
+            }
+            startTransition(async () => {
+                const res = await uploadMaterial(
+                    courseId,
+                    lesson.lesson_id,
+                    materialFile,
+                    materialTitle.trim(),
+                );
+                if (res.ok) {
+                    setMaterials((prev) => [...prev, res.data]);
+                    setMaterialTitle('');
+                    setMaterialFile(null);
+                } else {
+                    setNotice({ type: 'error', text: res.message });
+                }
+            });
+            return;
+        }
+
         if (!materialTitle.trim() || !materialUrl.trim()) {
             setNotice({
                 type: 'error',
@@ -178,22 +270,54 @@ export default function LessonContentEditor({
                     <h2 className="tf-section__title">Медиафайл</h2>
                 </div>
                 <div className="tf-card">
+                    <div className="tf-source-toggle">
+                        <button
+                            type="button"
+                            className={`tf-source-toggle__btn${mediaSource === 'url' ? ' tf-source-toggle__btn--active' : ''}`}
+                            onClick={() => setMediaSource('url')}
+                        >
+                            По ссылке
+                        </button>
+                        <button
+                            type="button"
+                            className={`tf-source-toggle__btn${mediaSource === 'file' ? ' tf-source-toggle__btn--active' : ''}`}
+                            onClick={() => setMediaSource('file')}
+                        >
+                            Загрузить файл
+                        </button>
+                    </div>
                     <form className="tf-form" onSubmit={handleSaveMedia}>
-                        <label className="tf-field">
-                            <span className="tf-label">
-                                Ссылка на видео/аудио
-                            </span>
-                            <input
-                                className="tf-input"
-                                value={mediaUrl}
-                                onChange={(e) => setMediaUrl(e.target.value)}
-                                placeholder="https://cdn.example.com/lesson.mp4"
-                            />
-                        </label>
+                        {mediaSource === 'url' ? (
+                            <label className="tf-field">
+                                <span className="tf-label">
+                                    Ссылка на видео/аудио
+                                </span>
+                                <input
+                                    className="tf-input"
+                                    value={mediaUrl}
+                                    onChange={(e) => setMediaUrl(e.target.value)}
+                                    placeholder="https://cdn.example.com/lesson.mp4"
+                                />
+                            </label>
+                        ) : (
+                            <label className="tf-field">
+                                <span className="tf-label">
+                                    Файл (mp4, webm, mp3, wav, ogg — до 500 МБ)
+                                </span>
+                                <input
+                                    className="tf-input"
+                                    type="file"
+                                    accept={MEDIA_UPLOAD_ACCEPT}
+                                    onChange={handleMediaFileChange}
+                                />
+                            </label>
+                        )}
                         <div className="tf-grid">
                             <label className="tf-field">
                                 <span className="tf-label">
                                     Длительность (сек.)
+                                    {mediaSource === 'file' &&
+                                        ' — определяется автоматически'}
                                 </span>
                                 <input
                                     className="tf-input"
@@ -203,16 +327,21 @@ export default function LessonContentEditor({
                                     onChange={(e) =>
                                         setDuration(e.target.value)
                                     }
+                                    disabled={
+                                        mediaSource === 'file' && !mediaFile
+                                    }
                                 />
                             </label>
-                            <label className="tf-field">
-                                <span className="tf-label">Тип</span>
-                                <Select
-                                    selectValues={MEDIA_TYPE_OPTIONS}
-                                    value={mediaType}
-                                    onChange={setMediaType}
-                                />
-                            </label>
+                            {mediaSource === 'url' && (
+                                <label className="tf-field">
+                                    <span className="tf-label">Тип</span>
+                                    <Select
+                                        selectValues={MEDIA_TYPE_OPTIONS}
+                                        value={mediaType}
+                                        onChange={setMediaType}
+                                    />
+                                </label>
+                            )}
                         </div>
                         <div className="tf-actions">
                             <Button type="submit" disabled={isPending}>
@@ -274,6 +403,23 @@ export default function LessonContentEditor({
                     </div>
                 )}
 
+                <div className="tf-source-toggle">
+                    <button
+                        type="button"
+                        className={`tf-source-toggle__btn${materialSource === 'url' ? ' tf-source-toggle__btn--active' : ''}`}
+                        onClick={() => setMaterialSource('url')}
+                    >
+                        По ссылке
+                    </button>
+                    <button
+                        type="button"
+                        className={`tf-source-toggle__btn${materialSource === 'file' ? ' tf-source-toggle__btn--active' : ''}`}
+                        onClick={() => setMaterialSource('file')}
+                    >
+                        Загрузить файл
+                    </button>
+                </div>
+
                 <form className="tf-inline-form" onSubmit={handleAddMaterial}>
                     <label className="tf-field">
                         <span className="tf-label">Название</span>
@@ -284,24 +430,48 @@ export default function LessonContentEditor({
                             placeholder="Конспект урока"
                         />
                     </label>
-                    <label className="tf-field">
-                        <span className="tf-label">Ссылка</span>
-                        <input
-                            className="tf-input"
-                            value={materialUrl}
-                            onChange={(e) => setMaterialUrl(e.target.value)}
-                            placeholder="https://cdn.example.com/notes.pdf"
-                        />
-                    </label>
-                    <label className="tf-field">
-                        <span className="tf-label">Тип</span>
-                        <input
-                            className="tf-input"
-                            value={materialType}
-                            onChange={(e) => setMaterialType(e.target.value)}
-                            placeholder="pdf"
-                        />
-                    </label>
+                    {materialSource === 'url' ? (
+                        <>
+                            <label className="tf-field">
+                                <span className="tf-label">Ссылка</span>
+                                <input
+                                    className="tf-input"
+                                    value={materialUrl}
+                                    onChange={(e) =>
+                                        setMaterialUrl(e.target.value)
+                                    }
+                                    placeholder="https://cdn.example.com/notes.pdf"
+                                />
+                            </label>
+                            <label className="tf-field">
+                                <span className="tf-label">Тип</span>
+                                <input
+                                    className="tf-input"
+                                    value={materialType}
+                                    onChange={(e) =>
+                                        setMaterialType(e.target.value)
+                                    }
+                                    placeholder="pdf"
+                                />
+                            </label>
+                        </>
+                    ) : (
+                        <label className="tf-field">
+                            <span className="tf-label">
+                                Файл (pdf, zip, jpeg, png — до 50 МБ)
+                            </span>
+                            <input
+                                className="tf-input"
+                                type="file"
+                                accept={MATERIAL_UPLOAD_ACCEPT}
+                                onChange={(e) =>
+                                    setMaterialFile(
+                                        e.target.files?.[0] ?? null,
+                                    )
+                                }
+                            />
+                        </label>
+                    )}
                     <div className="tf-actions">
                         <Button type="submit" disabled={isPending}>
                             <Icon name="plus" size={16} />

@@ -155,6 +155,31 @@
     text-decoration: underline;
 }
 
+/* Toggle between "paste a URL" and "upload a file" for media/materials */
+.tf-source-toggle {
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    background: var(--navy-8);
+    width: fit-content;
+}
+
+.tf-source-toggle__btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy-56);
+    transition: 120ms ease;
+}
+
+.tf-source-toggle__btn--active {
+    background: var(--white);
+    color: var(--navy);
+}
+
 /* Sections (lessons list, media, materials) */
 .tf-section {
     display: flex;

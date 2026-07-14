@@ -8,6 +8,7 @@ import { getLesson, saveProgress } from '@/lib/api/player';
 import { LessonData } from '@/models/Lesson';
 import Button from '@/components/UI/Button/Button';
 import Icon from '@/components/UI/Icon/Icon';
+import { useToast } from '@/components/Toast/ToastProvider';
 
 const SAVE_INTERVAL_SECONDS = 10;
 
@@ -26,6 +27,7 @@ export default function LessonViewer() {
     const searchParams = useSearchParams();
     const courseId = searchParams.get('course') ?? '';
     const lessonId = searchParams.get('lesson') ?? '';
+    const toast = useToast();
 
     const [data, setData] = useState<LessonData | null>(null);
     const [status, setStatus] = useState<
@@ -57,18 +59,21 @@ export default function LessonViewer() {
             } else if (res.code === 'forbidden') {
                 setErrorMsg(res.message);
                 setStatus('forbidden');
+                toast.error(res.message);
             } else if (res.code === 'not_found') {
                 setErrorMsg(res.message);
                 setStatus('not_found');
+                toast.error(res.message);
             } else {
                 setErrorMsg(res.message);
                 setStatus('error');
+                toast.error(res.message);
             }
         })();
         return () => {
             active = false;
         };
-    }, [courseId, lessonId]);
+    }, [courseId, lessonId, toast]);
 
     const persist = useCallback(
         async (seconds: number, markCompleted: boolean) => {
@@ -83,9 +88,11 @@ export default function LessonViewer() {
             if (res.ok) {
                 setPercent(res.data.percent_complete);
                 if (res.data.completed) setCompleted(true);
+            } else {
+                toast.error(res.message);
             }
         },
-        [courseId, lessonId],
+        [courseId, lessonId, toast],
     );
 
     function handleLoadedMetadata() {

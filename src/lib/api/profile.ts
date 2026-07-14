@@ -1,6 +1,7 @@
 'use server';
 
 import { auth } from '@/auth';
+import { translateError } from './apiError';
 
 export type ProfileResult = { ok: true } | { ok: false; message: string };
 
@@ -61,26 +62,8 @@ async function patch(
 
         const text = await response.text();
         console.error(`[profile] ${response.status} ${url} :: ${text}`);
-        switch (response.status) {
-            case 401:
-                return { ok: false, message: 'Неверный текущий пароль.' };
-            case 409:
-                return {
-                    ok: false,
-                    message: 'Этот email уже используется.',
-                };
-            case 400:
-                return {
-                    ok: false,
-                    message: 'Проверьте корректность введённых данных.',
-                };
-            default:
-                return {
-                    ok: false,
-                    message: 'Не удалось сохранить изменения.',
-                };
-        }
         void expectNoContent;
+        return { ok: false, message: translateError(response.status, text) };
     } catch (err) {
         console.error(`[profile] fetch failed for ${url}:`, err);
         return { ok: false, message: 'Сервер недоступен. Попробуйте позже.' };
@@ -133,7 +116,7 @@ export async function uploadAvatar(formData: FormData): Promise<ProfileResult> {
                 message: 'Неподдерживаемый формат изображения.',
             };
         }
-        return { ok: false, message: 'Не удалось загрузить фото.' };
+        return { ok: false, message: translateError(response.status, text) };
     } catch (err) {
         console.error(`[avatar] fetch failed for ${url}:`, err);
         return { ok: false, message: 'Сервер недоступен. Попробуйте позже.' };

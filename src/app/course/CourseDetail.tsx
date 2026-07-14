@@ -12,6 +12,7 @@ import { getTeacher, Teacher } from '@/lib/api/teachers';
 import Button from '@/components/UI/Button/Button';
 import Icon from '@/components/UI/Icon/Icon';
 import { emitCoinBalanceUpdate } from '@/components/CoinBalance/coinBalanceEvents';
+import { useToast } from '@/components/Toast/ToastProvider';
 
 function formatMoney(amount: number, _currency?: string): string {
     void _currency;
@@ -27,6 +28,7 @@ export default function CourseDetail() {
     const searchParams = useSearchParams();
     const id = searchParams.get('id') ?? '';
     const { data: session } = useSession();
+    const toast = useToast();
     const isTeacher = session?.user?.role === 'teacher';
 
     const [course, setCourse] = useState<Course | null>(null);
@@ -79,15 +81,15 @@ export default function CourseDetail() {
                 setOwned(true);
                 setBalance(res.data.balance);
                 emitCoinBalanceUpdate(res.data.balance);
-                setFeedback({
-                    type: 'success',
-                    text: `Оплата прошла успешно. Баланс: ${formatMoney(
-                        res.data.balance,
-                        res.data.currency,
-                    )}.`,
-                });
+                const text = `Оплата прошла успешно. Баланс: ${formatMoney(
+                    res.data.balance,
+                    res.data.currency,
+                )}.`;
+                setFeedback({ type: 'success', text });
+                toast.success(text);
             } else {
                 setFeedback({ type: 'error', text: res.message });
+                toast.error(res.message);
             }
         });
     }
@@ -102,18 +104,18 @@ export default function CourseDetail() {
                 setOwned(false);
                 setBalance(res.data.balance);
                 emitCoinBalanceUpdate(res.data.balance);
-                setFeedback({
-                    type: 'success',
-                    text: `Курс возвращён. Начислено ${formatMoney(
-                        res.data.amount,
-                        res.data.currency,
-                    )}. Баланс: ${formatMoney(
-                        res.data.balance,
-                        res.data.currency,
-                    )}.`,
-                });
+                const text = `Курс возвращён. Начислено ${formatMoney(
+                    res.data.amount,
+                    res.data.currency,
+                )}. Баланс: ${formatMoney(
+                    res.data.balance,
+                    res.data.currency,
+                )}.`;
+                setFeedback({ type: 'success', text });
+                toast.success(text);
             } else {
                 setFeedback({ type: 'error', text: res.message });
+                toast.error(res.message);
             }
         });
     }

@@ -34,12 +34,12 @@ export async function authenticate(prevState: AuthState, formData: FormData) {
             switch (error.type) {
                 case 'CredentialsSignin':
                     return {
-                        error: 'Неправильно введены данные',
+                        error: 'Неверная почта или пароль.',
                         email,
                     };
                 default:
                     return {
-                        error: 'Что-то пошло не так',
+                        error: 'Не удалось войти. Попробуйте позже.',
                         email,
                     };
             }
@@ -61,14 +61,14 @@ export async function register(
         | 'teacher';
     try {
         if (password !== secondPassword) {
-            return { error: 'Пароли не совпадают', email, fullName, role };
+            return { error: 'Пароли не совпадают.', email, fullName, role };
         }
 
         const response = await registerUser(email, password, role, fullName);
 
-        if (!response?.user)
+        if (!response.ok)
             return {
-                error: 'Пользователь не существует',
+                error: response.message,
                 email,
                 fullName,
                 role,
@@ -80,14 +80,14 @@ export async function register(
             switch (error.type) {
                 case 'CredentialsSignin':
                     return {
-                        error: 'Неправильно введены данные',
+                        error: 'Аккаунт создан, но не удалось войти автоматически. Попробуйте войти вручную.',
                         email,
                         fullName,
                         role,
                     };
                 default:
                     return {
-                        error: 'Что-то пошло не так',
+                        error: 'Не удалось завершить регистрацию. Попробуйте позже.',
                         email,
                         fullName,
                         role,

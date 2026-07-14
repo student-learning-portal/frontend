@@ -1,6 +1,7 @@
 'use server';
 
 import { auth } from '@/auth';
+import { translateError } from './apiError';
 
 export type CheckoutData = {
     transaction_id: string;
@@ -73,40 +74,22 @@ async function postJson<T>(
         const text = await response.text();
         console.error(`[purchase] ${response.status} ${url} :: ${text}`);
 
+        const message = translateError(response.status, text);
+
         // Maps the backend's HTTP status back to a typed PurchaseErrorCode so
         // callers can branch on `code` instead of parsing status/text themselves.
+        // The message itself is the specific, translated backend error.
         switch (response.status) {
             case 401:
-                return {
-                    ok: false,
-                    code: 'unauthenticated',
-                    message: 'Сессия истекла. Войдите снова.',
-                };
+                return { ok: false, code: 'unauthenticated', message };
             case 402:
-                return {
-                    ok: false,
-                    code: 'insufficient_funds',
-                    message: 'Недостаточно монет на балансе.',
-                };
+                return { ok: false, code: 'insufficient_funds', message };
             case 409:
-                return {
-                    ok: false,
-                    code: 'already_purchased',
-                    message: 'Курс уже куплен.',
-                };
+                return { ok: false, code: 'already_purchased', message };
             case 404:
-                return {
-                    ok: false,
-                    code: 'not_found',
-                    message: 'Курс не найден или покупка не найдена.',
-                };
+                return { ok: false, code: 'not_found', message };
             default:
-                return {
-                    ok: false,
-                    code: 'unknown',
-                    message:
-                        'Не удалось обработать операцию. Попробуйте позже.',
-                };
+                return { ok: false, code: 'unknown', message };
         }
     } catch (err) {
         console.error(`[purchase] fetch failed for ${url}:`, err);

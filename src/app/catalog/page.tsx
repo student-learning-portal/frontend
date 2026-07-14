@@ -11,6 +11,7 @@ import { getCourses, getMyCourses } from '@/lib/api/courses';
 import { Course } from '@/models/Course';
 import { SelectOption } from '@/types/selectOption';
 import Icon from '@/components/UI/Icon/Icon';
+import { useToast } from '@/components/Toast/ToastProvider';
 
 const PAGE_SIZE = 6;
 const MAX_PRICE = 10000;
@@ -45,6 +46,7 @@ export default function CatalogPage() {
     );
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const toast = useToast();
 
     useEffect(() => {
         let active = true;
@@ -58,17 +60,20 @@ export default function CatalogPage() {
                 ]);
                 if (!active) return;
                 setOwnedCourseIds(new Set(myCourses.map((c) => c.id)));
-                if (res === null) {
-                    setError(
-                        'Не удалось загрузить курсы. Проверьте, что бэкенд запущен и доступен по BACKEND_URL.',
-                    );
+                if (res.error) {
+                    setError(res.error.message);
+                    toast.error(res.error.message);
                     setAllCourses([]);
                     return;
                 }
-                setAllCourses(normalizeCourses(res));
+                setAllCourses(normalizeCourses(res.data));
             } catch (e) {
                 console.error(e);
-                if (active) setError('Ошибка при загрузке курсов.');
+                if (active) {
+                    const msg = 'Ошибка при загрузке курсов.';
+                    setError(msg);
+                    toast.error(msg);
+                }
             } finally {
                 if (active) setLoading(false);
             }
@@ -76,7 +81,7 @@ export default function CatalogPage() {
         return () => {
             active = false;
         };
-    }, []);
+    }, [toast]);
 
     const subjectOptions: SelectOption[] = useMemo(() => {
         const unique = Array.from(

@@ -6,6 +6,7 @@ import { useActionState, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Icon from '@/components/UI/Icon/Icon';
 import { authenticate } from '@/lib/actions';
+import { useToast } from '@/components/Toast/ToastProvider';
 
 export default function LoginForm() {
     const greetings = ['Добро пожаловать', 'Xush kelibsiz', 'Welcome'];
@@ -19,6 +20,11 @@ export default function LoginForm() {
     });
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
+    const toast = useToast();
+
+    useEffect(() => {
+        if (state.error) toast.error(state.error);
+    }, [state, toast]);
 
     useEffect(() => {
         const interval = setInterval(() => {

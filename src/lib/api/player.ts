@@ -2,6 +2,7 @@
 
 import { auth } from '@/auth';
 import { LessonData, LessonProgress, LessonSummary } from '@/models/Lesson';
+import { translateError } from './apiError';
 
 export type PlayerError =
     | 'unauthenticated'
@@ -47,31 +48,19 @@ async function request<T>(
             };
         }
 
+        const text = await response.text();
+        console.error(`[player] ${response.status} ${url} :: ${text}`);
+        const message = translateError(response.status, text);
+
         switch (response.status) {
             case 401:
-                return {
-                    ok: false,
-                    code: 'unauthenticated',
-                    message: 'Сессия истекла. Войдите снова.',
-                };
+                return { ok: false, code: 'unauthenticated', message };
             case 403:
-                return {
-                    ok: false,
-                    code: 'forbidden',
-                    message: 'Нет доступа к этому уроку. Купите курс.',
-                };
+                return { ok: false, code: 'forbidden', message };
             case 404:
-                return {
-                    ok: false,
-                    code: 'not_found',
-                    message: 'Урок не найден.',
-                };
+                return { ok: false, code: 'not_found', message };
             default:
-                return {
-                    ok: false,
-                    code: 'unknown',
-                    message: 'Не удалось загрузить данные урока.',
-                };
+                return { ok: false, code: 'unknown', message };
         }
     } catch (err) {
         console.error(`[player] fetch failed for ${url}:`, err);

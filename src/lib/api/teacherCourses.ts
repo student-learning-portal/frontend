@@ -3,6 +3,7 @@
 import { auth } from '@/auth';
 import { Course } from '@/models/Course';
 import { LessonType } from '@/models/Lesson';
+import { translateError } from './apiError';
 
 export type TeacherCourseResult<T> =
     | { ok: true; data: T }
@@ -38,25 +39,6 @@ export type TeacherMaterial = {
     type: string;
 };
 
-function errorMessageForStatus(status: number): string {
-    switch (status) {
-        case 400:
-            return 'Проверьте корректность введённых данных.';
-        case 401:
-            return 'Сессия истекла. Войдите снова.';
-        case 403:
-            return 'Недостаточно прав для этого действия.';
-        case 404:
-            return 'Курс или урок не найден.';
-        case 409:
-            return 'Опубликованный курс нельзя удалить — переведите его в архив.';
-        case 415:
-            return 'Неподдерживаемый формат файла.';
-        default:
-            return 'Не удалось выполнить действие. Попробуйте позже.';
-    }
-}
-
 async function request<T>(
     method: string,
     path: string,
@@ -90,7 +72,7 @@ async function request<T>(
         console.error(
             `[teacherCourses] ${response.status} ${method} ${url} :: ${text}`,
         );
-        return { ok: false, message: errorMessageForStatus(response.status) };
+        return { ok: false, message: translateError(response.status, text) };
     } catch (err) {
         console.error(`[teacherCourses] fetch failed for ${url}:`, err);
         return { ok: false, message: 'Сервер недоступен. Попробуйте позже.' };
@@ -124,7 +106,7 @@ async function requestFormData<T>(
 
         const text = await response.text();
         console.error(`[teacherCourses] ${response.status} POST ${url} :: ${text}`);
-        return { ok: false, message: errorMessageForStatus(response.status) };
+        return { ok: false, message: translateError(response.status, text) };
     } catch (err) {
         console.error(`[teacherCourses] fetch failed for ${url}:`, err);
         return { ok: false, message: 'Сервер недоступен. Попробуйте позже.' };

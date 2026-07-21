@@ -2,7 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import ChatBox from './ChatBox';
-import { ChatMessage, getStudentThread, sendStudentMessage } from '@/lib/api/chat';
+import {
+    ChatMessage,
+    getStudentThread,
+    sendStudentMessage,
+} from '@/lib/api/chat';
 import { useToast } from '@/components/Toast/ToastProvider';
 
 const POLL_MS = 5000;

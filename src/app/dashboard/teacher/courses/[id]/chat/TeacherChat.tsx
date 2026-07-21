@@ -18,9 +18,7 @@ const POLL_MS = 5000;
 
 function initials(name: string): string {
     const parts = name.trim().split(/\s+/);
-    return (
-        ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || 'У'
-    );
+    return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || 'У';
 }
 
 export default function TeacherChat({

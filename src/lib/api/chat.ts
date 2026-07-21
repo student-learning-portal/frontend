@@ -93,10 +93,14 @@ export async function sendStudentMessage(
     if (!body.trim()) {
         return { ok: false, message: 'Введите текст сообщения.' };
     }
-    return request<ChatMessage>('POST', `/api/v1/courses/${courseId}/messages`, {
-        body: body.trim(),
-        lesson_id: lessonId,
-    });
+    return request<ChatMessage>(
+        'POST',
+        `/api/v1/courses/${courseId}/messages`,
+        {
+            body: body.trim(),
+            lesson_id: lessonId,
+        },
+    );
 }
 
 // --- Преподаватель ---

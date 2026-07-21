@@ -5,6 +5,7 @@ import './AppShell.css';
 import StudentNavigationBar from '@/components/StudentNavigationBar/NavigationBar';
 import Avatar from '@/components/Avatar/Avatar';
 import CoinBalance from '@/components/CoinBalance/CoinBalance';
+import NotificationBell from '@/components/NotificationBell/NotificationBell';
 import { StudentNavigationLinkProps } from '@/types/navigationLinkProps';
 import { UserRole } from '@/models/User';
 
@@ -39,6 +40,7 @@ export default function AppShell({
             </Link>
             <div className="top-bar">
                 <div className="profile-part">
+                    <NotificationBell />
                     <CoinBalance />
                     <Avatar
                         name={session?.user?.fullName}

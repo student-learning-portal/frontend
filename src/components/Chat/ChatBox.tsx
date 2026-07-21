@@ -66,9 +66,7 @@ export default function ChatBox({
                                 key={m.id}
                                 className={`chat-msg${mine ? ' chat-msg--mine' : ''}`}
                             >
-                                <div className="chat-msg__bubble">
-                                    {m.body}
-                                </div>
+                                <div className="chat-msg__bubble">{m.body}</div>
                                 <div className="chat-msg__time">
                                     {formatTime(m.created_at)}
                                 </div>

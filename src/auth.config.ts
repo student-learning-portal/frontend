@@ -1,7 +1,7 @@
 import type { NextAuthConfig } from 'next-auth';
 import { fetchTeacherStatus } from '@/lib/api/auth';
 import { isAwaitingApproval, roleHome } from '@/lib/roles';
-import type { UserRole } from '@/models/User';
+import type { TeacherStatus, UserRole } from '@/models/User';
 
 // Settings is the one dashboard page every role shares (name, email, password),
 // so the role-specific redirects below deliberately leave it alone.
@@ -31,7 +31,9 @@ export const authConfig = {
             // of staring at the waiting screen. Re-read the live status from the
             // backend for as long as it isn't settled.
             if (token.role === 'teacher' && token.teacherStatus !== 'approved') {
-                const status = await fetchTeacherStatus(token.accessToken);
+                const status = await fetchTeacherStatus(
+                    token.accessToken as string | undefined,
+                );
                 if (status) token.teacherStatus = status;
             }
             return token;
@@ -40,7 +42,9 @@ export const authConfig = {
             session.user.id = token.id as string;
             session.user.fullName = token.fullName as string;
             session.user.role = token.role as UserRole;
-            session.user.teacherStatus = token.teacherStatus;
+            session.user.teacherStatus = token.teacherStatus as
+                | TeacherStatus
+                | undefined;
             session.accessToken = token.accessToken as string;
             return session;
         },

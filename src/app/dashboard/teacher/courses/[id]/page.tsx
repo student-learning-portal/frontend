@@ -1,9 +1,8 @@
 import '../teacherForms.css';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { auth } from '@/auth';
 import { getMyCourses } from '@/lib/api/courses';
 import { getCourseLessons } from '@/lib/api/player';
+import { requireApprovedTeacher } from '@/lib/guards';
 import Icon from '@/components/UI/Icon/Icon';
 import CourseEditor from './CourseEditor';
 
@@ -14,10 +13,7 @@ export default async function Page({
 }) {
     const { id } = await params;
 
-    const session = await auth();
-    if (session?.user?.role !== 'teacher') {
-        redirect('/dashboard');
-    }
+    await requireApprovedTeacher();
 
     const [courses, lessonsRes] = await Promise.all([
         getMyCourses(),

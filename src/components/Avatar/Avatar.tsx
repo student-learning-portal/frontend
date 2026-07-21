@@ -6,10 +6,17 @@ import { useEffect, useRef, useState } from 'react';
 import Icon from '@/components/UI/Icon/Icon';
 import { logout } from '@/lib/actions';
 import { getMe } from '@/lib/api/profile';
+import { UserRole } from '@/models/User';
 
 type Props = {
     name?: string;
-    role?: 'teacher' | 'student';
+    role?: UserRole;
+};
+
+const ROLE_LABEL: Record<UserRole, string> = {
+    teacher: 'Преподаватель',
+    student: 'Ученик',
+    admin: 'Администратор',
 };
 
 function getInitials(name?: string): string {
@@ -53,7 +60,7 @@ export default function Avatar({ name, role }: Props) {
         return () => document.removeEventListener('mousedown', onDocClick);
     }, []);
 
-    const roleLabel = userRole === 'teacher' ? 'Преподаватель' : 'Ученик';
+    const roleLabel = ROLE_LABEL[userRole ?? 'student'];
 
     return (
         <div className="avatar-wrap" ref={wrapRef}>

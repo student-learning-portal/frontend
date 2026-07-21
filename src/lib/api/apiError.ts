@@ -25,6 +25,12 @@ const MESSAGE_MAP: Record<string, string> = {
     // Права доступа
     'student role required': 'Действие доступно только ученикам.',
     'teacher role required': 'Действие доступно только преподавателям.',
+    'administrator role required': 'Действие доступно только администратору.',
+    'teacher account is awaiting administrator approval':
+        'Аккаунт преподавателя ещё не подтверждён администратором.',
+    'this account is not a teacher': 'Этот аккаунт не является преподавателем.',
+    'account no longer exists': 'Аккаунт больше не существует.',
+    'approval check failed': 'Не удалось проверить статус аккаунта.',
     'access denied: no active entitlement': 'Нет доступа: курс не приобретён.',
     'you do not own this course': 'Это не ваш курс.',
     'not allowed for this course': 'Действие недоступно для этого курса.',
@@ -97,6 +103,10 @@ const MESSAGE_MAP: Record<string, string> = {
     'failed to load progress': 'Не удалось загрузить прогресс.',
     'failed to save progress': 'Не удалось сохранить прогресс.',
     'failed to load payment history': 'Не удалось загрузить историю платежей.',
+    'failed to load teacher applications':
+        'Не удалось загрузить заявки преподавателей.',
+    'failed to update teacher status':
+        'Не удалось обновить статус преподавателя.',
     'failed to load course rating': 'Не удалось загрузить оценку курса.',
     'failed to save rating': 'Не удалось сохранить оценку.',
     'failed to create review': 'Не удалось создать отзыв.',

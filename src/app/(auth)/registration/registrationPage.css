@@ -11,3 +11,23 @@
     flex-direction: row;
     gap: 16px;
 }
+
+/* Shown when the teacher role is picked: the account will need an
+   administrator's confirmation before the teacher features unlock. */
+.role-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: -4px 0 0;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--warning);
+    background: var(--warning-bg);
+}
+
+.role-notice svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}

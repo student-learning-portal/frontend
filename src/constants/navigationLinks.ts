@@ -45,3 +45,31 @@ export const teacherNavigationLinkProps: StudentNavigationLinkProps[] = [
         iconName: 'settings',
     },
 ];
+
+// A teacher waiting on (or refused) approval only has the waiting screen and
+// their own settings — every other teacher route is closed to them anyway.
+export const pendingTeacherNavigationLinkProps: StudentNavigationLinkProps[] = [
+    {
+        title: 'Статус заявки',
+        href: '/dashboard/pending',
+        iconName: 'clock',
+    },
+    {
+        title: 'Настройки',
+        href: '/dashboard/settings',
+        iconName: 'settings',
+    },
+];
+
+export const adminNavigationLinkProps: StudentNavigationLinkProps[] = [
+    {
+        title: 'Заявки',
+        href: '/dashboard/admin',
+        iconName: 'users',
+    },
+    {
+        title: 'Настройки',
+        href: '/dashboard/settings',
+        iconName: 'settings',
+    },
+];

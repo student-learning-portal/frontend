@@ -44,6 +44,8 @@ src/app/            Next.js App Router pages
 src/components/     Reusable UI (AppShell, CourseCard, LoginForm, nav bar, generic UI/ widgets, ...)
 src/lib/api/        Server-side fetch wrappers around the Go backend (one file per resource)
 src/lib/actions.ts  Server Actions
+src/lib/guards.ts   Server-side page guards (e.g. approved-teacher-only pages)
+src/lib/roles.ts    Role helpers shared by the middleware config and the pages
 src/lib/hooks.ts    Shared client-side hooks
 src/models/         Domain types (Course, Lesson, User)
 src/types/          next-auth session/JWT augmentation, misc prop types
@@ -70,6 +72,8 @@ an unused/planned dependency, not a wired-up state layer.
 | `/dashboard/my-courses`, `/payments`, `/results`, `/settings`                                     | Student account pages                                                 |
 | `/dashboard/teacher`                                                                              | Teacher analytics — learner activity / at-risk ranking                |
 | `/dashboard/teacher/courses`, `/courses/new`, `/courses/[id]`, `/courses/[id]/lessons/[lessonId]` | Teacher course/lesson authoring (create, edit, manage content)        |
+| `/dashboard/pending`                                                                              | Waiting screen for a teacher whose registration is still under review |
+| `/dashboard/admin`                                                                                | Administrator: teacher approval queue (approve / reject)              |
 
 ## Auth
 
@@ -82,9 +86,35 @@ NextAuth v5 (beta), Credentials provider only:
   as `Authorization: Bearer <token>` when calling the backend.
 - `src/auth.config.ts`'s `authorized()` callback gates `/dashboard`,
   `/catalog`, and `/course` behind a session, and bounces a logged-in user
-  away from public routes (e.g. `/login`) back to `/dashboard`.
+  away from public routes (e.g. `/login`) back to their role's home
+  (`src/lib/roles.ts`'s `roleHome`).
 - `src/types/next-auth.d.ts` augments the session/JWT/User types with
-  `fullName`, `role` (`teacher`/`student`), and the backend `accessToken`.
+  `fullName`, `role` (`teacher`/`student`/`admin`), `teacherStatus`, and the
+  backend `accessToken`.
+
+### Roles
+
+Three roles, each with its own home and navigation (`src/app/dashboard/layout.tsx`):
+
+| Role      | Home                 | Notes                                                                    |
+| --------- | -------------------- | ------------------------------------------------------------------------ |
+| `student` | `/dashboard`         | Catalog, player, results, payments.                                       |
+| `teacher` | `/dashboard/teacher` | Only once approved; see below.                                            |
+| `admin`   | `/dashboard/admin`   | Teacher approval queue only. Signs in with a plain login, not an email.  |
+
+A teacher registration goes into the administrator's review queue: the account
+signs in normally but is parked on `/dashboard/pending` and the backend answers
+`403` on every teacher endpoint until it is approved (see
+`../backend/README.md`, "Administrator & Teacher Approval"). Because the
+approval can land while the teacher is already signed in, `auth.config.ts`'s
+`jwt` callback re-reads the live status from the backend
+(`fetchTeacherStatus`) for as long as it isn't `approved`, so the session
+unblocks itself without a re-login.
+
+The administrator's login is a plain string (`admin` by default), not an email
+address — which is why the sign-in form's field is `type="text"` and
+`src/auth.ts` validates the identifier with `z.string()` rather than
+`z.email()`.
 
 ## Testing
 

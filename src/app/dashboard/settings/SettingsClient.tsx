@@ -12,12 +12,13 @@ import {
     uploadAvatar,
     getMe,
 } from '@/lib/api/profile';
+import { UserRole } from '@/models/User';
 
 type Props = {
     initialName: string;
     initialEmail: string;
     initialAvatar?: string | null;
-    role?: 'teacher' | 'student';
+    role?: UserRole;
 };
 
 type Tab = 'profile' | 'security';

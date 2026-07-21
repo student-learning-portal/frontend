@@ -6,6 +6,13 @@ import StudentNavigationBar from '@/components/StudentNavigationBar/NavigationBa
 import Avatar from '@/components/Avatar/Avatar';
 import CoinBalance from '@/components/CoinBalance/CoinBalance';
 import { StudentNavigationLinkProps } from '@/types/navigationLinkProps';
+import { UserRole } from '@/models/User';
+
+const ROLE_LABEL: Record<UserRole, string> = {
+    teacher: 'Преподаватель',
+    student: 'Ученик',
+    admin: 'Администратор',
+};
 
 type AppShellProps = {
     children: ReactNode;
@@ -22,7 +29,7 @@ export default function AppShell({
     portalTitle,
     homeHref,
 }: AppShellProps) {
-    const isTeacher = session?.user?.role === 'teacher';
+    const roleLabel = ROLE_LABEL[session?.user?.role ?? 'student'];
 
     return (
         <div className="main-container">
@@ -43,9 +50,7 @@ export default function AppShell({
                 <StudentNavigationBar
                     navigationLinkProps={navigationLinkProps}
                 ></StudentNavigationBar>
-                <div className="admin-panel">
-                    {isTeacher ? 'Преподаватель' : 'Ученик'}
-                </div>
+                <div className="admin-panel">{roleLabel}</div>
             </div>
             <div className="main-content">{children}</div>
         </div>

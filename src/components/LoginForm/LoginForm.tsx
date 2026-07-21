@@ -49,9 +49,12 @@ export default function LoginForm() {
             </h2>
             <div className="input-area">
                 <div className="label"> Email </div>
+                {/* Not type="email": the administrator signs in with a plain
+                    login ("admin"), which the browser's email validation would
+                    block before the form could ever be submitted. */}
                 <Input
-                    placeholder="Введите email"
-                    type="email"
+                    placeholder="Введите email или логин"
+                    type="text"
                     name="email"
                     defaultValue={state.email}
                     required

@@ -47,6 +47,13 @@ export default function RegistrationPage() {
                 </Button>
                 <input type="hidden" name="role" value={chosenRole} />
             </div>
+            {chosenRole === 'teacher' && (
+                <p className="role-notice">
+                    <Icon size={16} name="clock" />
+                    Аккаунт преподавателя проходит проверку: создавать курсы
+                    можно будет после подтверждения администратором.
+                </p>
+            )}
             <div className="input-area">
                 <div className="label"> Имя </div>
                 <Input

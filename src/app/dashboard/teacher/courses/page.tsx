@@ -1,8 +1,7 @@
 import './teacherCourses.css';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { auth } from '@/auth';
 import { getMyCourses } from '@/lib/api/courses';
+import { requireApprovedTeacher } from '@/lib/guards';
 import Icon from '@/components/UI/Icon/Icon';
 
 const STATUS_LABEL: Record<string, string> = {
@@ -16,10 +15,7 @@ function formatPrice(price: number, currency?: string): string {
 }
 
 export default async function Page() {
-    const session = await auth();
-    if (session?.user?.role !== 'teacher') {
-        redirect('/dashboard');
-    }
+    await requireApprovedTeacher();
 
     const courses = await getMyCourses();
 

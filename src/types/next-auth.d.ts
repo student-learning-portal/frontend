@@ -1,9 +1,11 @@
 import { DefaultSession } from 'next-auth';
+import { TeacherStatus, UserRole } from '@/models/User';
 
 declare module 'next-auth' {
     interface User {
         fullName: string;
-        role: 'teacher' | 'student';
+        role: UserRole;
+        teacherStatus?: TeacherStatus;
         token: string;
     }
 
@@ -11,7 +13,8 @@ declare module 'next-auth' {
         user: DefaultSession['user'] & {
             id: string;
             fullName: string;
-            role: 'teacher' | 'student';
+            role: UserRole;
+            teacherStatus?: TeacherStatus;
         };
         accessToken: string;
     }
@@ -21,7 +24,8 @@ declare module 'next-auth/jwt' {
     interface JWT {
         id: string;
         fullName: string;
-        role: 'teacher' | 'student';
+        role: UserRole;
+        teacherStatus?: TeacherStatus;
         accessToken: string;
     }
 }

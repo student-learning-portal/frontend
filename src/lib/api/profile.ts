@@ -1,6 +1,7 @@
 'use server';
 
 import { auth } from '@/auth';
+import { TeacherStatus, UserRole } from '@/models/User';
 import { translateError } from './apiError';
 
 export type ProfileResult = { ok: true } | { ok: false; message: string };
@@ -9,9 +10,11 @@ export type Me = {
     id: string;
     email: string;
     full_name: string;
-    role: 'teacher' | 'student';
+    role: UserRole;
     balance: number;
     avatar_url?: string;
+    // Only sent for teachers: their position in the approval queue.
+    teacher_status?: TeacherStatus;
 };
 
 export async function getMe(): Promise<Me | null> {

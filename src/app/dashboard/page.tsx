@@ -52,8 +52,16 @@ function ContinueCard({ course }: { course: CourseResult }) {
 
 export default async function Page() {
     const session = await auth();
+    if (session?.user?.role === 'admin') {
+        redirect('/dashboard/admin');
+    }
     if (session?.user?.role === 'teacher') {
-        redirect('/dashboard/teacher');
+        // A teacher still in the approval queue has no teacher portal yet.
+        redirect(
+            session.user.teacherStatus === 'approved'
+                ? '/dashboard/teacher'
+                : '/dashboard/pending',
+        );
     }
 
     const [me, results] = await Promise.all([getMe(), getMyResults()]);
